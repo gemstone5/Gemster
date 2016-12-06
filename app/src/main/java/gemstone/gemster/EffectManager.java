@@ -5,6 +5,9 @@ import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import java.util.Timer;
@@ -81,6 +84,15 @@ public class EffectManager implements CustomAnimationDrawable.IAnimationFinishLi
             }
         };
         timer.schedule(timerTask, totalDuration);
+    }
+
+    public void startClickScaleAnimation(Context context, View view) {
+        Animation scale = AnimationUtils.loadAnimation(context, R.anim.anim_scale_click);
+        // Animation set to join both scaling and moving
+        AnimationSet animSet = new AnimationSet(true);
+        animSet.addAnimation(scale);
+        // Launching animation set
+        view.startAnimation(animSet);
     }
 
     @Override

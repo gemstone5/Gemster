@@ -21,7 +21,7 @@ public class Common {
     public static final int DEBUG_CHECK_EVOLUTION_TIME = 902;
 
     public static final long TIME_DELAY = 10L;
-    public static final long FEED_TIME = 500L; // 3sec
+    public static final long FEED_TIME = 0L; // 3sec
     public static final long EVOLUTION_TIME = 1000; // 2sec
 
     public static void setPrefData(Context context, String key, String value) {

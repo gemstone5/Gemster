@@ -55,7 +55,7 @@ public class MainInterfaceManager {
     public enum CallMode {
         FEED_BUTTON_ENABLE, FEED_BUTTON_DISABLE, EVOLUTION_BUTTON_ENABLE, EVOLUTION_BUTTON_DISABLE,
         FEED_COUNT_SET, MONSTER_IMAGE_SET, MONSTER_NAME_SET, MONSTER_PROB_SET,
-        MONSTER_EFFECT_START, MONSTER_EFFECT_EVOLUTION_SUCCESS_START, MONSTER_EFFECT_EVOLUTION_FAILED_START,
+        MONSTER_EFFECT_EVOLUTION_SUCCESS_START, MONSTER_EFFECT_EVOLUTION_FAILED_START,
         GAME_VIEW_SET, DEBUG_INFO_SET
     }
 
@@ -76,8 +76,9 @@ public class MainInterfaceManager {
         mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                startClickScaleAnimation(view);
                 if (view.equals(mImageViewMonster)) { // image view monster
-                    mListener.onMainInterfaceEvent(EVENT_SHOW_TOAST, "Monster image is clicked !!");
+
                 } else if (view.equals(mImageButtonFeed)) { // image button feed
                     mImageButtonFeed.setEnabled(false);
                     mImageButtonEvolution.setEnabled(false);
@@ -157,6 +158,10 @@ public class MainInterfaceManager {
         mEffectManager.startFailedEffect(mImageViewMonsterEffect);
     }
 
+    private void startClickScaleAnimation(View view) {
+        mEffectManager.startClickScaleAnimation(mContext, view);
+    }
+
     private void setTextViewFeedCount() {
         int count = (int) Common.getPrefData(mContext, Common.MAIN_FEED);
         mTextViewFeedCount.setText(count + "개");
@@ -201,8 +206,6 @@ public class MainInterfaceManager {
                 setTextViewMonsterProb();
                 break;
 
-            case MONSTER_EFFECT_START:
-                break;
             case MONSTER_EFFECT_EVOLUTION_SUCCESS_START:
                 startEvolutionSuccessEffect();
                 break;
