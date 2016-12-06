@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_game_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/layout_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:background="@color/color_959595"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <ImageView
+            android:id="@+id/imageView_feed"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@mipmap/ic_launcher" />
+
+        <TextView
+            android:id="@+id/textView_feed_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="15dp"
+            android:text="0개"
+            android:textSize="20dp" />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_monster_set"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_below="@id/layout_status"
+        android:layout_centerHorizontal="true">
+
+        <LinearLayout
+            android:id="@+id/layout_monster"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/border_line">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/imageView_monster"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="3dp"
+                    android:src="@mipmap/ic_launcher" />
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/imageView_monster_effect"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter"
+            android:src="@drawable/border_line"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_monster_set"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingBottom="15dp"
+        android:paddingTop="5dp">
+
+        <TextView
+            android:id="@+id/textView_monster_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Monster Name"
+            android:textSize="25dp" />
+
+        <TextView
+            android:id="@+id/textView_monster_prob"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="(Prob: 100%)"
+            android:textSize="20dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_util"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/layout_desc"
+        android:gravity="center_horizontal">
+
+        <ImageButton
+            android:id="@+id/imageButton_feed"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_below="@+id/imageView_main_monster"
+            android:src="@android:drawable/ic_input_add" />
+
+        <ImageButton
+            android:id="@+id/imageButton_evolution"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_below="@+id/imageView_main_monster"
+            android:layout_marginLeft="10dp"
+            android:src="@android:drawable/btn_star_big_on" />
+
+    </LinearLayout>
+
+</RelativeLayout>
