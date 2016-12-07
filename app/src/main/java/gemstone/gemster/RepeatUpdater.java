@@ -20,7 +20,21 @@ public class RepeatUpdater {
     public static int MODE_AUTO_DECREMENT = 2;
     private int mMode = MODE_NONE;
 
-    private final int REPEAT_DELAY = 1000;
+    private final int REPEAT_DELAY = 50;
+
+    public enum EventMode {
+        EVENT_INCREMENT, EVENT_DECREMENT
+    }
+
+    private RepeatUpdaterEventListener mListener;
+
+    public interface RepeatUpdaterEventListener {
+        void onRepeatUpdaterEvent(EventMode mode, Object param);
+    }
+
+    public void setEventListener(RepeatUpdaterEventListener listener) {
+        mListener = listener;
+    }
 
     public void setMode(int mode) {
         mMode = mode;
@@ -46,10 +60,16 @@ public class RepeatUpdater {
 
     private void increment() {
         Log.d("gemtest", "increment");
+        if (mListener != null) {
+            mListener.onRepeatUpdaterEvent(EventMode.EVENT_INCREMENT, null);
+        }
     }
 
     private void decrement() {
         Log.d("gemtest", "decrement");
+        if (mListener != null) {
+            mListener.onRepeatUpdaterEvent(EventMode.EVENT_DECREMENT, null);
+        }
     }
 
     private void processPostDelayed() {

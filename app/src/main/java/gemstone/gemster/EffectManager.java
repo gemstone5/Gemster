@@ -6,8 +6,8 @@ import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
-import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 
 import java.util.Timer;
@@ -96,13 +96,27 @@ public class EffectManager implements CustomAnimationDrawable.IAnimationFinishLi
         timer.schedule(timerTask, totalDuration);
     }
 
-    public void startClickScaleAnimation(Context context, View view) {
-        Animation scale = AnimationUtils.loadAnimation(context, R.anim.anim_scale_click);
-        // Animation set to join both scaling and moving
-        AnimationSet animSet = new AnimationSet(true);
-        animSet.addAnimation(scale);
-        // Launching animation set
-        view.startAnimation(animSet);
+    private void processClickScaleAnimation(View view, boolean isStart) {
+        float startValue = isStart ? 1f : 1.05f;
+        float endValue = isStart ? 1.05f : 1f;
+
+        Animation anim = new ScaleAnimation(
+                startValue, endValue, // Start and end values for the X axis scaling
+                startValue, endValue, // Start and end values for the Y axis scaling
+                Animation.RELATIVE_TO_SELF, 0.5f, // Pivot point of X scaling
+                Animation.RELATIVE_TO_SELF, 0.5f); // Pivot point of Y scaling
+        anim.setFillAfter(true); // Needed to keep the result of the animation
+        anim.setDuration(100);
+        anim.setInterpolator(new LinearInterpolator());
+        view.startAnimation(anim);
+    }
+
+    public void startClickScaleAnimation(View view) {
+        processClickScaleAnimation(view, true);
+    }
+
+    public void endClickScaleAnimation(View view) {
+        processClickScaleAnimation(view, false);
     }
 
     public boolean isEvolutionEffect(AnimationDrawable animation) {

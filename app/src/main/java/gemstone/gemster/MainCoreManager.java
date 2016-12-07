@@ -11,7 +11,7 @@ import java.util.Timer;
  * Created by WONSEOK OH on 2016-12-04.
  */
 
-public class MainCoreManager implements MainInterfaceManager.EventListener, RepeatTimerTask.EventListener {
+public class MainCoreManager implements MainInterfaceManager.EventListener, RepeatTimerTask.EventListener, RepeatUpdater.RepeatUpdaterEventListener {
 
     private Context mContext;
 
@@ -32,12 +32,17 @@ public class MainCoreManager implements MainInterfaceManager.EventListener, Repe
         mContext = context;
 
         // Init repeat updater
-        mRepeatUpdater = new RepeatUpdater();
+        initRepeatUpdater();
 
         // Init interface manager
         mInterfaceManager = new MainInterfaceManager(context, activity);
         mInterfaceManager.setEventListener(this);
         mInterfaceManager.init();
+    }
+
+    private void initRepeatUpdater() {
+        mRepeatUpdater = new RepeatUpdater();
+        mRepeatUpdater.setEventListener(this);
     }
 
     public void processRepeatTimer(int type) {
@@ -81,13 +86,22 @@ public class MainCoreManager implements MainInterfaceManager.EventListener, Repe
 
     private void tryEvolution() {
         int DNA = (int) Common.getPrefData(mContext, Common.MAIN_DNA);
-        if (DNA < 3) {
+        if (DNA < 1) {
             mInterfaceManager.call(MainInterfaceManager.CallMode.DNA_BUTTON_ENABLE);
             mInterfaceManager.call(MainInterfaceManager.CallMode.EVOLUTION_BUTTON_ENABLE);
             return;
         }
 
-        Common.setPrefData(mContext, Common.MAIN_DNA, String.valueOf(DNA - 3));
+        int useDNA = (int) Common.getPrefData(mContext, Common.MAIN_DNA_USE);
+        DNA -= useDNA;
+        Common.setPrefData(mContext, Common.MAIN_DNA, String.valueOf(DNA));
+
+        if (DNA == 0 || useDNA > DNA) {
+            useDNA = ((DNA == 0) ? 1 : DNA);
+            Common.setPrefData(mContext, Common.MAIN_DNA_USE, String.valueOf(useDNA));
+            mInterfaceManager.call(MainInterfaceManager.CallMode.DNA_USE_SET);
+        }
+
         mInterfaceManager.call(MainInterfaceManager.CallMode.DNA_COUNT_SET);
 
         mTimeRemain = (int) (Common.EVOLUTION_TIME / Common.TIME_DELAY);
@@ -97,10 +111,13 @@ public class MainCoreManager implements MainInterfaceManager.EventListener, Repe
     private void completeTryEvolution() {
         final boolean result;
         final int tier = (int) Common.getPrefData(mContext, Common.MAIN_TIER);
-        TypedArray arrProb = mContext.getResources().obtainTypedArray(R.array.array_evol_prob);
+        final int useDNA = (int) Common.getPrefData(mContext, Common.MAIN_DNA_USE);
+        TypedArray arrPerProb = mContext.getResources().obtainTypedArray(R.array.array_evol_prob);
+        float perProb = arrPerProb.getFloat(tier, 0F);
+        float prob = perProb * useDNA;
         double rand = Math.random();
 
-        result = (rand < arrProb.getFloat(tier, 0F));
+        result = (rand < prob);
 
         if (result) {
             Common.setPrefData(mContext, Common.MAIN_TIER, String.valueOf(tier + 1));
@@ -136,6 +153,33 @@ public class MainCoreManager implements MainInterfaceManager.EventListener, Repe
         }
     }
 
+    private void incrementDNAUse() {
+        int useDNA = (int) Common.getPrefData(mContext, Common.MAIN_DNA_USE);
+        int DNA = (int) Common.getPrefData(mContext, Common.MAIN_DNA);
+        if (useDNA < DNA) {
+            useDNA += 1;
+            if (useDNA > DNA) {
+                useDNA = DNA;
+            }
+        }
+        Common.setPrefData(mContext, Common.MAIN_DNA_USE, String.valueOf(useDNA));
+        mInterfaceManager.call(MainInterfaceManager.CallMode.DNA_USE_SET);
+        mInterfaceManager.call(MainInterfaceManager.CallMode.MONSTER_PROB_SET);
+    }
+
+    private void decrementDNAUSE() {
+        int useDNA = (int) Common.getPrefData(mContext, Common.MAIN_DNA_USE);
+        if (useDNA > 1) {
+            useDNA -= 1;
+            if (useDNA < 0) {
+                useDNA = 1;
+            }
+        }
+        Common.setPrefData(mContext, Common.MAIN_DNA_USE, String.valueOf(useDNA));
+        mInterfaceManager.call(MainInterfaceManager.CallMode.DNA_USE_SET);
+        mInterfaceManager.call(MainInterfaceManager.CallMode.MONSTER_PROB_SET);
+    }
+
     @Override
     public void onMainInterfaceEvent(MainInterfaceManager.EventMode mode, Object param) {
         if (MainInterfaceManager.EventMode.EVENT_SHOW_TOAST.equals(mode)) {
@@ -144,6 +188,10 @@ public class MainCoreManager implements MainInterfaceManager.EventListener, Repe
             getDNA();
         } else if (MainInterfaceManager.EventMode.EVENT_TRY_EVOLUTION.equals(mode)) {
             tryEvolution();
+        } else if (MainInterfaceManager.EventMode.EVENT_TOUCH_DNA_UP_START.equals(mode)) {
+            incrementDNAUse();
+        } else if (MainInterfaceManager.EventMode.EVENT_TOUCH_DNA_DOWN_START.equals(mode)) {
+            decrementDNAUSE();
         } else if (MainInterfaceManager.EventMode.EVENT_LONG_CLICK_DNA_UP.equals(mode)) {
             mRepeatUpdater.setMode(RepeatUpdater.MODE_AUTO_INCREMENT);
             mRepeatUpdater.run();
@@ -155,11 +203,21 @@ public class MainCoreManager implements MainInterfaceManager.EventListener, Repe
         }
     }
 
+    @Override
+    public void onRepeatUpdaterEvent(RepeatUpdater.EventMode mode, Object param) {
+        if (RepeatUpdater.EventMode.EVENT_INCREMENT.equals(mode)) {
+            incrementDNAUse();
+        } else if (RepeatUpdater.EventMode.EVENT_DECREMENT.equals(mode)) {
+            decrementDNAUSE();
+        }
+    }
+
     public void call(CallMode mode) {
         switch (mode) {
             case RESET_FOR_DEBUG:
-                Common.setPrefData(mContext, Common.MAIN_TIER, Common.INTEGER_STRING_DEFAULT_VALUE);
-                Common.setPrefData(mContext, Common.MAIN_DNA, Common.INTEGER_STRING_DEFAULT_VALUE);
+                Common.setPrefData(mContext, Common.MAIN_TIER, Common.getDefaultValue(Common.MAIN_TIER));
+                Common.setPrefData(mContext, Common.MAIN_DNA, Common.getDefaultValue(Common.MAIN_DNA));
+                Common.setPrefData(mContext, Common.MAIN_DNA_USE, Common.getDefaultValue(Common.MAIN_DNA_USE));
                 mInterfaceManager.call(MainInterfaceManager.CallMode.GAME_VIEW_SET);
                 break;
         }

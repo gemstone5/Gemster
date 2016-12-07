@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.AnimationDrawable;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,25 +29,25 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
 
     private TextView mTextViewDebug;
     private TextView mTextViewDNACount;
-    private RelativeLayout mRelativeLayoutMonsterSet;
-    private ImageView mImageViewMonster;
+    private ImageView mImageViewMonsterFrame;
+    private ImageButton mImageButtonMonster;
     private ImageView mImageViewMonsterEffect;
     private TextView mTextViewMonsterName;
     private TextView mTextViewMonsterProb;
     private ImageButton mImageButtonDNA;
     private ImageButton mImageButtonEvolution;
-    private TextView mTextViewDnaUse;
+    private TextView mTextViewDNAUse;
     private ImageButton mImageButtonDnaUp;
     private ImageButton mImageButtonDnaDown;
 
-    private View.OnClickListener mOnClickListener;
     private View.OnLongClickListener mOnLongClickListener;
     private View.OnTouchListener mOnTouchListener;
 
     EffectManager mEffectManager;
 
     public enum EventMode {
-        EVENT_LONG_CLICK_DNA_UP, EVENT_LONG_CLICK_DNA_DOWN, EVENT_TOUCH_DNA_UP_OR_DOWN_STOP,
+        EVENT_LONG_CLICK_DNA_UP, EVENT_LONG_CLICK_DNA_DOWN,
+        EVENT_TOUCH_DNA_UP_START, EVENT_TOUCH_DNA_DOWN_START, EVENT_TOUCH_DNA_UP_OR_DOWN_STOP,
         EVENT_SHOW_TOAST, EVENT_GET_DNA, EVENT_TRY_EVOLUTION
     }
 
@@ -61,7 +62,7 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
     }
 
     public enum CallMode {
-        DNA_BUTTON_ENABLE, DNA_BUTTON_DISABLE, EVOLUTION_BUTTON_ENABLE, EVOLUTION_BUTTON_DISABLE,
+        DNA_BUTTON_ENABLE, DNA_BUTTON_DISABLE, EVOLUTION_BUTTON_ENABLE, EVOLUTION_BUTTON_DISABLE, DNA_USE_SET,
         DNA_COUNT_SET, MONSTER_IMAGE_SET, MONSTER_NAME_SET, MONSTER_PROB_SET,
         MONSTER_EFFECT_EVOLUTION_SUCCESS_START, MONSTER_EFFECT_EVOLUTION_FAILED_START,
         GAME_VIEW_SET, DEBUG_INFO_SET
@@ -82,25 +83,8 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
     }
 
     private void initViewListener() {
-        initOnClickListener();
         initOnLongClickListener();
         initOnTouchListener();
-    }
-
-    private void initOnClickListener() {
-        mOnClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startClickScaleAnimation(view);
-                if (view.equals(mImageViewMonster)) { // image view monster
-
-                } else if (view.equals(mImageButtonDNA)) { // image button DNA
-                    getDNA();
-                } else if (view.equals(mImageButtonEvolution)) { // image button evolution
-                    tryEvolution();
-                }
-            }
-        };
     }
 
     private void initOnLongClickListener() {
@@ -117,12 +101,48 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
         };
     }
 
+    private void processActionDown(View view) {
+        if (view != null && view.equals(mImageButtonDnaUp)) {
+            mListener.onMainInterfaceEvent(EventMode.EVENT_TOUCH_DNA_UP_START, null);
+        } else if (view != null && view.equals(mImageButtonDnaDown)) {
+            mListener.onMainInterfaceEvent(EventMode.EVENT_TOUCH_DNA_DOWN_START, null);
+        }
+    }
+
+    private void processActionUp(View view) {
+        if (view == null) return;
+        if (view.equals(mImageButtonDNA)) {
+            getDNA();
+        } else if (view.equals(mImageButtonEvolution)) {
+            tryEvolution();
+        } else if (view.equals(mImageButtonDnaUp) || view.equals(mImageButtonDnaDown)) {
+            mListener.onMainInterfaceEvent(EventMode.EVENT_TOUCH_DNA_UP_OR_DOWN_STOP, null);
+        }
+    }
+
+    private void processActionCancel(View view) {
+        if (view == null) return;
+        if (view.equals(mImageButtonDnaUp) || view.equals(mImageButtonDnaDown)) {
+            mListener.onMainInterfaceEvent(EventMode.EVENT_TOUCH_DNA_UP_OR_DOWN_STOP, null);
+        }
+    }
+
     private void initOnTouchListener() {
         mOnTouchListener = new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
-                    mListener.onMainInterfaceEvent(EventMode.EVENT_TOUCH_DNA_UP_OR_DOWN_STOP, null);
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    Log.d("gemtest", "action down");
+                    startClickScaleAnimation(view);
+                    processActionDown(view);
+                } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                    Log.d("gemtest", "action up");
+                    endClickScaleAnimation(view);
+                    processActionUp(view);
+                } else if (event.getAction() == MotionEvent.ACTION_CANCEL) {
+                    Log.d("gemtest", "action cancel");
+                    endClickScaleAnimation(view);
+                    processActionCancel(view);
                 }
                 return false;
             }
@@ -144,29 +164,46 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
     private void initViews() {
         mTextViewDebug = (TextView) mActivity.findViewById(R.id.textView_debug);
         mTextViewDNACount = (TextView) mActivity.findViewById(R.id.textView_DNA_count);
-        mRelativeLayoutMonsterSet = (RelativeLayout) mActivity.findViewById(R.id.layout_monster_set);
-        mImageViewMonster = (ImageView) mActivity.findViewById(R.id.imageView_monster);
+        mImageViewMonsterFrame = (ImageView) mActivity.findViewById(R.id.imageView_monster_frame);
+        mImageButtonMonster = (ImageButton) mActivity.findViewById(R.id.imageButton_monster);
         mImageViewMonsterEffect = (ImageView) mActivity.findViewById(R.id.imageView_monster_effect);
         mTextViewMonsterName = (TextView) mActivity.findViewById(R.id.textView_monster_name);
         mTextViewMonsterProb = (TextView) mActivity.findViewById(R.id.textView_monster_prob);
         mImageButtonDNA = (ImageButton) mActivity.findViewById(R.id.imageButton_DNA);
         mImageButtonEvolution = (ImageButton) mActivity.findViewById(R.id.imageButton_evolution);
-        mTextViewDnaUse = (TextView) mActivity.findViewById(R.id.textView_dna_use);
+        mTextViewDNAUse = (TextView) mActivity.findViewById(R.id.textView_DNA_use);
         mImageButtonDnaUp = (ImageButton) mActivity.findViewById(R.id.imageButton_DNA_up);
         mImageButtonDnaDown = (ImageButton) mActivity.findViewById(R.id.imageButton_DNA_down);
 
-        setLayoutMonsterSet();
+        setImageViewMonsterLayoutCollection();
 
         setGameView();
     }
 
-    private void setLayoutMonsterSet() {
+    private void setImageViewMonsterLayoutCollection() {
         DisplayMetrics displayMetrics = mContext.getResources().getDisplayMetrics();
         int size = displayMetrics.widthPixels;
 
-        ViewGroup.LayoutParams params = mRelativeLayoutMonsterSet.getLayoutParams();
-        params.width = params.height = size;
-        mRelativeLayoutMonsterSet.setLayoutParams(params);
+        // Set monster effect layout
+        ViewGroup.LayoutParams paramEffect = mImageViewMonsterEffect.getLayoutParams();
+        paramEffect.width = paramEffect.height = size;
+        mImageViewMonsterEffect.setLayoutParams(paramEffect);
+
+        // Set monster frame layout
+        int marginFrame = mContext.getResources().getDimensionPixelSize(R.dimen.imageView_monster_frame_margin_size);
+        RelativeLayout.LayoutParams paramFrame = (RelativeLayout.LayoutParams) mImageViewMonsterFrame.getLayoutParams();
+        paramFrame.width = paramFrame.height = size - marginFrame;
+        int halfOfMarginFrame = marginFrame / 2;
+        paramFrame.setMargins(halfOfMarginFrame, halfOfMarginFrame, 0, 0);
+        mImageViewMonsterFrame.setLayoutParams(paramFrame);
+
+        // Set monster layout
+        int marginImage = marginFrame + mContext.getResources().getDimensionPixelSize(R.dimen.imageView_monster_image_margin_size);
+        RelativeLayout.LayoutParams paramImage = (RelativeLayout.LayoutParams) mImageButtonMonster.getLayoutParams();
+        paramImage.width = paramImage.height = size - marginImage;
+        int halfOfMarginImage = marginImage / 2;
+        paramImage.setMargins(halfOfMarginImage, halfOfMarginImage, 0, 0);
+        mImageButtonMonster.setLayoutParams(paramImage);
     }
 
     private void setGameView() {
@@ -174,13 +211,14 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
         setTextViewMonsterName();
         setTextViewMonsterProb();
         setTextViewDNACount();
+        setTextViewDNAUse();
     }
 
     private void setImageViewMonsterImage() {
         int tier = (int) Common.getPrefData(mContext, Common.MAIN_TIER);
         TypedArray arrImg = mContext.getResources().obtainTypedArray(R.array.array_evol_image);
         int id = arrImg.getResourceId(tier, 0);
-        mImageViewMonster.setImageResource(id);
+        mImageButtonMonster.setImageResource(id);
     }
 
     private void setTextViewMonsterName() {
@@ -192,8 +230,12 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
 
     private void setTextViewMonsterProb() {
         int tier = (int) Common.getPrefData(mContext, Common.MAIN_TIER);
-        TypedArray arrProb = mContext.getResources().obtainTypedArray(R.array.array_evol_prob);
-        float prob = arrProb.getFloat(tier, 0F);
+        int useDNA = (int) Common.getPrefData(mContext, Common.MAIN_DNA_USE);
+        TypedArray arrPerProb = mContext.getResources().obtainTypedArray(R.array.array_evol_prob);
+        float perProb = arrPerProb.getFloat(tier, 0F);
+        float prob = perProb * useDNA;
+
+        if (prob > 1.0F) prob = 1.0F;
 
         DecimalFormat df = new DecimalFormat("#.##");
         df.setRoundingMode(RoundingMode.HALF_UP);
@@ -211,7 +253,11 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
     }
 
     private void startClickScaleAnimation(View view) {
-        mEffectManager.startClickScaleAnimation(mContext, view);
+        mEffectManager.startClickScaleAnimation(view);
+    }
+
+    private void endClickScaleAnimation(View view) {
+        mEffectManager.endClickScaleAnimation(view);
     }
 
     private void setTextViewDNACount() {
@@ -219,10 +265,15 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
         mTextViewDNACount.setText(count + "개");
     }
 
+    private void setTextViewDNAUse() {
+        int count = (int) Common.getPrefData(mContext, Common.MAIN_DNA_USE);
+        mTextViewDNAUse.setText(String.valueOf(count));
+    }
+
     private void setListener() {
-        mImageViewMonster.setOnClickListener(mOnClickListener);
-        mImageButtonDNA.setOnClickListener(mOnClickListener);
-        mImageButtonEvolution.setOnClickListener(mOnClickListener);
+        mImageButtonMonster.setOnTouchListener(mOnTouchListener);
+        mImageButtonDNA.setOnTouchListener(mOnTouchListener);
+        mImageButtonEvolution.setOnTouchListener(mOnTouchListener);
 
         mImageButtonDnaUp.setOnLongClickListener(mOnLongClickListener);
         mImageButtonDnaUp.setOnTouchListener(mOnTouchListener);
@@ -248,6 +299,10 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
                 break;
             case EVOLUTION_BUTTON_DISABLE:
                 mImageButtonEvolution.setEnabled(true);
+                break;
+
+            case DNA_USE_SET:
+                setTextViewDNAUse();
                 break;
 
             case DNA_COUNT_SET:

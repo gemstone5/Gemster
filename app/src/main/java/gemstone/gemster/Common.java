@@ -13,8 +13,7 @@ public class Common {
     public static final String MAIN_INIT = "main_init";
     public static final String MAIN_TIER = "main_tier";
     public static final String MAIN_DNA = "main_DNA";
-
-    public static final String INTEGER_STRING_DEFAULT_VALUE = "0";
+    public static final String MAIN_DNA_USE = "main_DNA_use";
 
     public static final int DEBUG_DEFAULT = 900;
     public static final int DEBUG_CHECK_DNA_TIME = 901;
@@ -28,14 +27,26 @@ public class Common {
         SharedPreferences prefs = context.getSharedPreferences(PREF_MAIN, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(key, String.valueOf(value));
-        boolean result = editor.commit();
+        editor.commit();
+    }
+
+    private static boolean isIntegerValue(String key) {
+        return MAIN_TIER.equals(key) || MAIN_DNA.equals(key) || MAIN_DNA_USE.equals(key);
+    }
+
+    public static String getDefaultValue(String key) {
+        int result;
+        if (MAIN_INIT.equals(key) || MAIN_DNA_USE.equals(key)) result = 1;
+        else result = 0;
+
+        return String.valueOf(result);
     }
 
     public static Object getPrefData(Context context, String key) {
         SharedPreferences prefs = context.getSharedPreferences(PREF_MAIN, Context.MODE_PRIVATE);
         String value = prefs.getString(key, "");
 
-        if (MAIN_TIER.equals(key) || MAIN_DNA.equals(key)) {
+        if (isIntegerValue(key)) {
             if ("".equals(value)) return 0;
             return Integer.parseInt(value);
         } else {
@@ -45,10 +56,11 @@ public class Common {
 
     public static void initSharedPrefData(Context context) {
         // init shared pref values if have not initialized yet
-        if (!"".equals(Common.getPrefData(context, Common.MAIN_INIT))) {
-            Common.setPrefData(context, Common.MAIN_INIT, "1");
-            Common.setPrefData(context, Common.MAIN_TIER, "0");
-            Common.setPrefData(context, Common.MAIN_DNA, "0");
+        if ("".equals(getPrefData(context, MAIN_INIT))) {
+            setPrefData(context, MAIN_INIT, getDefaultValue(MAIN_INIT));
+            setPrefData(context, MAIN_TIER, getDefaultValue(MAIN_TIER));
+            setPrefData(context, MAIN_DNA, getDefaultValue(MAIN_DNA));
+            setPrefData(context, MAIN_DNA_USE, getDefaultValue(MAIN_DNA_USE));
         }
     }
 

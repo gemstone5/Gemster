@@ -8,7 +8,7 @@
         android:id="@+id/layout_status"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="top"
+        android:layout_alignParentTop="true"
         android:background="@color/color_959595"
         android:gravity="center_horizontal"
         android:orientation="horizontal"
@@ -31,53 +31,36 @@
 
     </LinearLayout>
 
-    <RelativeLayout
-        android:id="@+id/layout_monster_set"
+    <ImageView
+        android:id="@+id/imageView_monster_frame"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_below="@id/layout_status"
-        android:layout_centerHorizontal="true">
+        android:background="@drawable/border_line" />
 
-        <LinearLayout
-            android:id="@+id/layout_monster"
-            android:layout_width="300dp"
-            android:layout_height="300dp"
-            android:layout_centerHorizontal="true"
-            android:layout_centerInParent="true"
-            android:layout_centerVertical="true"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="30dp"
-            android:background="@drawable/border_line">
+    <ImageButton
+        android:id="@+id/imageButton_monster"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_below="@+id/layout_status"
+        android:background="@android:color/transparent"
+        android:scaleType="fitXY"
+        android:src="@mipmap/ic_launcher" />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <ImageView
-                    android:id="@+id/imageView_monster"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:padding="10dp"
-                    android:src="@mipmap/ic_launcher" />
-            </RelativeLayout>
-
-        </LinearLayout>
-
-        <ImageView
-            android:id="@+id/imageView_monster_effect"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="fitCenter"
-            android:src="@drawable/border_line"
-            android:visibility="gone" />
-
-    </RelativeLayout>
+    <ImageView
+        android:id="@+id/imageView_monster_effect"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/layout_status"
+        android:scaleType="fitCenter"
+        android:src="@drawable/border_line"
+        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/layout_desc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/layout_monster_set"
+        android:layout_below="@id/imageButton_monster"
         android:gravity="center_horizontal"
         android:orientation="vertical"
         android:paddingBottom="15dp"
@@ -132,12 +115,11 @@
                 android:src="@android:drawable/btn_star_big_on" />
 
             <TextView
-                android:id="@+id/textView_dna_use"
+                android:id="@+id/textView_DNA_use"
                 android:layout_width="80dp"
                 android:layout_height="20dp"
                 android:background="@color/color_959595"
-                android:gravity="center"
-                android:text="0" />
+                android:gravity="center" />
 
         </LinearLayout>
 
@@ -150,14 +132,12 @@
                 android:id="@+id/imageButton_DNA_up"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:padding="4dp"
                 android:src="@android:drawable/ic_input_add" />
 
             <ImageButton
                 android:id="@+id/imageButton_DNA_down"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:padding="4dp"
                 android:src="@android:drawable/ic_delete" />
 
         </LinearLayout>

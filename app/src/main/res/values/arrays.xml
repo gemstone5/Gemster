@@ -15,9 +15,9 @@
     </string-array>
 
     <array name="array_evol_prob">
-        <item>0.9</item>
         <item>0.3</item>
-        <item>0.1</item>
-        <item>0.0</item>
+        <item>0.01</item>
+        <item>0.005</item>
+        <item>0.001</item>
     </array>
 </resources>
