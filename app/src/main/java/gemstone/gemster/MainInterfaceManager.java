@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.AnimationDrawable;
 import android.util.DisplayMetrics;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -26,27 +27,33 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
     private final Activity mActivity;
 
     private TextView mTextViewDebug;
-    private TextView mTextViewFeedCount;
+    private TextView mTextViewDNACount;
     private RelativeLayout mRelativeLayoutMonsterSet;
     private ImageView mImageViewMonster;
     private ImageView mImageViewMonsterEffect;
     private TextView mTextViewMonsterName;
     private TextView mTextViewMonsterProb;
-    private ImageButton mImageButtonFeed;
+    private ImageButton mImageButtonDNA;
     private ImageButton mImageButtonEvolution;
+    private TextView mTextViewDnaUse;
+    private ImageButton mImageButtonDnaUp;
+    private ImageButton mImageButtonDnaDown;
 
     private View.OnClickListener mOnClickListener;
+    private View.OnLongClickListener mOnLongClickListener;
+    private View.OnTouchListener mOnTouchListener;
 
     EffectManager mEffectManager;
 
-    public final static int EVENT_SHOW_TOAST = 0;
-    public final static int EVENT_GET_FEED = 1;
-    public final static int EVENT_TRY_EVOLUTION = 2;
+    public enum EventMode {
+        EVENT_LONG_CLICK_DNA_UP, EVENT_LONG_CLICK_DNA_DOWN, EVENT_TOUCH_DNA_UP_OR_DOWN_STOP,
+        EVENT_SHOW_TOAST, EVENT_GET_DNA, EVENT_TRY_EVOLUTION
+    }
 
     private EventListener mListener;
 
     public interface EventListener {
-        void onMainInterfaceEvent(int mode, Object param);
+        void onMainInterfaceEvent(EventMode mode, Object param);
     }
 
     public void setEventListener(EventListener listener) {
@@ -54,8 +61,8 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
     }
 
     public enum CallMode {
-        FEED_BUTTON_ENABLE, FEED_BUTTON_DISABLE, EVOLUTION_BUTTON_ENABLE, EVOLUTION_BUTTON_DISABLE,
-        FEED_COUNT_SET, MONSTER_IMAGE_SET, MONSTER_NAME_SET, MONSTER_PROB_SET,
+        DNA_BUTTON_ENABLE, DNA_BUTTON_DISABLE, EVOLUTION_BUTTON_ENABLE, EVOLUTION_BUTTON_DISABLE,
+        DNA_COUNT_SET, MONSTER_IMAGE_SET, MONSTER_NAME_SET, MONSTER_PROB_SET,
         MONSTER_EFFECT_EVOLUTION_SUCCESS_START, MONSTER_EFFECT_EVOLUTION_FAILED_START,
         GAME_VIEW_SET, DEBUG_INFO_SET
     }
@@ -69,9 +76,15 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
     }
 
     public void init() {
-        initOnClickListener();
+        initViewListener();
         initViews();
-        setClickListener();
+        setListener();
+    }
+
+    private void initViewListener() {
+        initOnClickListener();
+        initOnLongClickListener();
+        initOnTouchListener();
     }
 
     private void initOnClickListener() {
@@ -81,29 +94,66 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
                 startClickScaleAnimation(view);
                 if (view.equals(mImageViewMonster)) { // image view monster
 
-                } else if (view.equals(mImageButtonFeed)) { // image button feed
-                    mImageButtonFeed.setEnabled(false);
-                    mImageButtonEvolution.setEnabled(false);
-                    mListener.onMainInterfaceEvent(EVENT_GET_FEED, null);
+                } else if (view.equals(mImageButtonDNA)) { // image button DNA
+                    getDNA();
                 } else if (view.equals(mImageButtonEvolution)) { // image button evolution
-                    mImageButtonFeed.setEnabled(false);
-                    mImageButtonEvolution.setEnabled(false);
-                    mListener.onMainInterfaceEvent(EVENT_TRY_EVOLUTION, null);
+                    tryEvolution();
                 }
             }
         };
     }
 
+    private void initOnLongClickListener() {
+        mOnLongClickListener = new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if (view.equals(mImageButtonDnaUp)) {
+                    mListener.onMainInterfaceEvent(EventMode.EVENT_LONG_CLICK_DNA_UP, null);
+                } else if (view.equals(mImageButtonDnaDown)) {
+                    mListener.onMainInterfaceEvent(EventMode.EVENT_LONG_CLICK_DNA_DOWN, null);
+                }
+                return false;
+            }
+        };
+    }
+
+    private void initOnTouchListener() {
+        mOnTouchListener = new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
+                    mListener.onMainInterfaceEvent(EventMode.EVENT_TOUCH_DNA_UP_OR_DOWN_STOP, null);
+                }
+                return false;
+            }
+        };
+    }
+
+    private void getDNA() {
+        mImageButtonDNA.setEnabled(false);
+        mImageButtonEvolution.setEnabled(false);
+        mListener.onMainInterfaceEvent(EventMode.EVENT_GET_DNA, null);
+    }
+
+    private void tryEvolution() {
+        mImageButtonDNA.setEnabled(false);
+        mImageButtonEvolution.setEnabled(false);
+        mListener.onMainInterfaceEvent(EventMode.EVENT_TRY_EVOLUTION, null);
+    }
+
     private void initViews() {
         mTextViewDebug = (TextView) mActivity.findViewById(R.id.textView_debug);
-        mTextViewFeedCount = (TextView) mActivity.findViewById(R.id.textView_feed_count);
+        mTextViewDNACount = (TextView) mActivity.findViewById(R.id.textView_DNA_count);
         mRelativeLayoutMonsterSet = (RelativeLayout) mActivity.findViewById(R.id.layout_monster_set);
         mImageViewMonster = (ImageView) mActivity.findViewById(R.id.imageView_monster);
         mImageViewMonsterEffect = (ImageView) mActivity.findViewById(R.id.imageView_monster_effect);
         mTextViewMonsterName = (TextView) mActivity.findViewById(R.id.textView_monster_name);
         mTextViewMonsterProb = (TextView) mActivity.findViewById(R.id.textView_monster_prob);
-        mImageButtonFeed = (ImageButton) mActivity.findViewById(R.id.imageButton_feed);
+        mImageButtonDNA = (ImageButton) mActivity.findViewById(R.id.imageButton_DNA);
         mImageButtonEvolution = (ImageButton) mActivity.findViewById(R.id.imageButton_evolution);
+        mTextViewDnaUse = (TextView) mActivity.findViewById(R.id.textView_dna_use);
+        mImageButtonDnaUp = (ImageButton) mActivity.findViewById(R.id.imageButton_DNA_up);
+        mImageButtonDnaDown = (ImageButton) mActivity.findViewById(R.id.imageButton_DNA_down);
 
         setLayoutMonsterSet();
 
@@ -123,7 +173,7 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
         setImageViewMonsterImage();
         setTextViewMonsterName();
         setTextViewMonsterProb();
-        setTextViewFeedCount();
+        setTextViewDNACount();
     }
 
     private void setImageViewMonsterImage() {
@@ -164,15 +214,20 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
         mEffectManager.startClickScaleAnimation(mContext, view);
     }
 
-    private void setTextViewFeedCount() {
-        int count = (int) Common.getPrefData(mContext, Common.MAIN_FEED);
-        mTextViewFeedCount.setText(count + "개");
+    private void setTextViewDNACount() {
+        int count = (int) Common.getPrefData(mContext, Common.MAIN_DNA);
+        mTextViewDNACount.setText(count + "개");
     }
 
-    private void setClickListener() {
+    private void setListener() {
         mImageViewMonster.setOnClickListener(mOnClickListener);
-        mImageButtonFeed.setOnClickListener(mOnClickListener);
+        mImageButtonDNA.setOnClickListener(mOnClickListener);
         mImageButtonEvolution.setOnClickListener(mOnClickListener);
+
+        mImageButtonDnaUp.setOnLongClickListener(mOnLongClickListener);
+        mImageButtonDnaUp.setOnTouchListener(mOnTouchListener);
+        mImageButtonDnaDown.setOnLongClickListener(mOnLongClickListener);
+        mImageButtonDnaDown.setOnTouchListener(mOnTouchListener);
     }
 
     public void call(CallMode mode) {
@@ -181,11 +236,11 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
 
     public void call(CallMode mode, Object param) {
         switch (mode) {
-            case FEED_BUTTON_ENABLE:
-                mImageButtonFeed.setEnabled(true);
+            case DNA_BUTTON_ENABLE:
+                mImageButtonDNA.setEnabled(true);
                 break;
-            case FEED_BUTTON_DISABLE:
-                mImageButtonFeed.setEnabled(false);
+            case DNA_BUTTON_DISABLE:
+                mImageButtonDNA.setEnabled(false);
                 break;
 
             case EVOLUTION_BUTTON_ENABLE:
@@ -195,8 +250,8 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
                 mImageButtonEvolution.setEnabled(true);
                 break;
 
-            case FEED_COUNT_SET:
-                setTextViewFeedCount();
+            case DNA_COUNT_SET:
+                setTextViewDNACount();
                 break;
             case MONSTER_IMAGE_SET:
                 setImageViewMonsterImage();
@@ -228,7 +283,7 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
     @Override
     public void complete(AnimationDrawable animation) {
         if (mEffectManager.isEvolutionEffect(animation)) {
-            mImageButtonFeed.setEnabled(true);
+            mImageButtonDNA.setEnabled(true);
             mImageButtonEvolution.setEnabled(true);
         }
     }

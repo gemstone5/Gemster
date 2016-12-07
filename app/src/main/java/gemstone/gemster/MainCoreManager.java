@@ -17,9 +17,10 @@ public class MainCoreManager implements MainInterfaceManager.EventListener, Repe
 
     private MainInterfaceManager mInterfaceManager;
 
-    private Timer mTimerFeed;
-    private RepeatTimerTask mTimerTaskFeed;
+    private Timer mTimerDNA;
+    private RepeatTimerTask mTimerTaskDNA;
     private int mTimeRemain;
+    private RepeatUpdater mRepeatUpdater;
 
     Handler mHandler = new Handler();
 
@@ -30,6 +31,10 @@ public class MainCoreManager implements MainInterfaceManager.EventListener, Repe
     public MainCoreManager(Context context, Activity activity) {
         mContext = context;
 
+        // Init repeat updater
+        mRepeatUpdater = new RepeatUpdater();
+
+        // Init interface manager
         mInterfaceManager = new MainInterfaceManager(context, activity);
         mInterfaceManager.setEventListener(this);
         mInterfaceManager.init();
@@ -37,16 +42,16 @@ public class MainCoreManager implements MainInterfaceManager.EventListener, Repe
 
     public void processRepeatTimer(int type) {
         final int timerType = type;
-        mTimerFeed = new Timer(true);
-        mTimerTaskFeed = new RepeatTimerTask(type, mTimeRemain);
-        mTimerTaskFeed.setEventListener(this);
-        mTimerFeed.schedule(mTimerTaskFeed, Common.TIME_DELAY);
+        mTimerDNA = new Timer(true);
+        mTimerTaskDNA = new RepeatTimerTask(type, mTimeRemain);
+        mTimerTaskDNA.setEventListener(this);
+        mTimerDNA.schedule(mTimerTaskDNA, Common.TIME_DELAY);
 
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                if (timerType == RepeatTimerTask.TYPE_GET_FEED) {
-                    setDebugDescription(Common.DEBUG_CHECK_FEED_TIME);
+                if (timerType == RepeatTimerTask.TYPE_GET_DNA) {
+                    setDebugDescription(Common.DEBUG_CHECK_DNA_TIME);
                 } else if (timerType == RepeatTimerTask.TYPE_TRY_EVOLUTION) {
                     setDebugDescription(Common.DEBUG_CHECK_EVOLUTION_TIME);
                 }
@@ -54,36 +59,36 @@ public class MainCoreManager implements MainInterfaceManager.EventListener, Repe
         });
     }
 
-    private void getFeed() {
-        mTimeRemain = (int) (Common.FEED_TIME / Common.TIME_DELAY);
-        processRepeatTimer(RepeatTimerTask.TYPE_GET_FEED);
+    private void getDNA() {
+        mTimeRemain = (int) (Common.DNA_TIME / Common.TIME_DELAY);
+        processRepeatTimer(RepeatTimerTask.TYPE_GET_DNA);
     }
 
-    private void completeGettingFeed() {
-        int feed = (int) Common.getPrefData(mContext, Common.MAIN_FEED);
-        Common.setPrefData(mContext, Common.MAIN_FEED, String.valueOf(feed + 1));
+    private void completeGettingDNA() {
+        int feed = (int) Common.getPrefData(mContext, Common.MAIN_DNA);
+        Common.setPrefData(mContext, Common.MAIN_DNA, String.valueOf(feed + 1));
 
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                mInterfaceManager.call(MainInterfaceManager.CallMode.FEED_BUTTON_ENABLE);
+                mInterfaceManager.call(MainInterfaceManager.CallMode.DNA_BUTTON_ENABLE);
                 mInterfaceManager.call(MainInterfaceManager.CallMode.EVOLUTION_BUTTON_ENABLE);
-                mInterfaceManager.call(MainInterfaceManager.CallMode.FEED_COUNT_SET);
+                mInterfaceManager.call(MainInterfaceManager.CallMode.DNA_COUNT_SET);
                 setDebugDescription(Common.DEBUG_DEFAULT);
             }
         });
     }
 
     private void tryEvolution() {
-        int feed = (int) Common.getPrefData(mContext, Common.MAIN_FEED);
-        if (feed < 3) {
-            mInterfaceManager.call(MainInterfaceManager.CallMode.FEED_BUTTON_ENABLE);
+        int DNA = (int) Common.getPrefData(mContext, Common.MAIN_DNA);
+        if (DNA < 3) {
+            mInterfaceManager.call(MainInterfaceManager.CallMode.DNA_BUTTON_ENABLE);
             mInterfaceManager.call(MainInterfaceManager.CallMode.EVOLUTION_BUTTON_ENABLE);
             return;
         }
 
-        Common.setPrefData(mContext, Common.MAIN_FEED, String.valueOf(feed - 3));
-        mInterfaceManager.call(MainInterfaceManager.CallMode.FEED_COUNT_SET);
+        Common.setPrefData(mContext, Common.MAIN_DNA, String.valueOf(DNA - 3));
+        mInterfaceManager.call(MainInterfaceManager.CallMode.DNA_COUNT_SET);
 
         mTimeRemain = (int) (Common.EVOLUTION_TIME / Common.TIME_DELAY);
         processRepeatTimer(RepeatTimerTask.TYPE_TRY_EVOLUTION);
@@ -118,10 +123,10 @@ public class MainCoreManager implements MainInterfaceManager.EventListener, Repe
     }
 
     @Override
-    public void onTimerFeedEvent(int type, int mode) {
+    public void onTimerDNAEvent(int type, int mode) {
         if (mode == RepeatTimerTask.EVENT_COMPLETE) {
-            if (type == RepeatTimerTask.TYPE_GET_FEED) {
-                completeGettingFeed();
+            if (type == RepeatTimerTask.TYPE_GET_DNA) {
+                completeGettingDNA();
             } else if (type == RepeatTimerTask.TYPE_TRY_EVOLUTION) {
                 completeTryEvolution();
             }
@@ -132,13 +137,21 @@ public class MainCoreManager implements MainInterfaceManager.EventListener, Repe
     }
 
     @Override
-    public void onMainInterfaceEvent(int mode, Object param) {
-        if (mode == MainInterfaceManager.EVENT_SHOW_TOAST) {
+    public void onMainInterfaceEvent(MainInterfaceManager.EventMode mode, Object param) {
+        if (MainInterfaceManager.EventMode.EVENT_SHOW_TOAST.equals(mode)) {
             mInterfaceManager.showToast((String) param);
-        } else if (mode == MainInterfaceManager.EVENT_GET_FEED) {
-            getFeed();
-        } else if (mode == MainInterfaceManager.EVENT_TRY_EVOLUTION) {
+        } else if (MainInterfaceManager.EventMode.EVENT_GET_DNA.equals(mode)) {
+            getDNA();
+        } else if (MainInterfaceManager.EventMode.EVENT_TRY_EVOLUTION.equals(mode)) {
             tryEvolution();
+        } else if (MainInterfaceManager.EventMode.EVENT_LONG_CLICK_DNA_UP.equals(mode)) {
+            mRepeatUpdater.setMode(RepeatUpdater.MODE_AUTO_INCREMENT);
+            mRepeatUpdater.run();
+        } else if (MainInterfaceManager.EventMode.EVENT_LONG_CLICK_DNA_DOWN.equals(mode)) {
+            mRepeatUpdater.setMode(RepeatUpdater.MODE_AUTO_DECREMENT);
+            mRepeatUpdater.run();
+        } else if (MainInterfaceManager.EventMode.EVENT_TOUCH_DNA_UP_OR_DOWN_STOP.equals(mode)) {
+            mRepeatUpdater.stop();
         }
     }
 
@@ -146,7 +159,7 @@ public class MainCoreManager implements MainInterfaceManager.EventListener, Repe
         switch (mode) {
             case RESET_FOR_DEBUG:
                 Common.setPrefData(mContext, Common.MAIN_TIER, Common.INTEGER_STRING_DEFAULT_VALUE);
-                Common.setPrefData(mContext, Common.MAIN_FEED, Common.INTEGER_STRING_DEFAULT_VALUE);
+                Common.setPrefData(mContext, Common.MAIN_DNA, Common.INTEGER_STRING_DEFAULT_VALUE);
                 mInterfaceManager.call(MainInterfaceManager.CallMode.GAME_VIEW_SET);
                 break;
         }
@@ -158,8 +171,8 @@ public class MainCoreManager implements MainInterfaceManager.EventListener, Repe
         switch (mode) {
             case Common.DEBUG_DEFAULT:
                 break;
-            case Common.DEBUG_CHECK_FEED_TIME:
-                desc += "\nFeed time left: " + String.valueOf((float) (mTimeRemain * Common.TIME_DELAY) / 1000F) + "sec";
+            case Common.DEBUG_CHECK_DNA_TIME:
+                desc += "\nDNA time left: " + String.valueOf((float) (mTimeRemain * Common.TIME_DELAY) / 1000F) + "sec";
                 break;
             case Common.DEBUG_CHECK_EVOLUTION_TIME:
                 desc += "\nEvolution time left: " + String.valueOf((float) (mTimeRemain * Common.TIME_DELAY) / 1000F) + "sec";

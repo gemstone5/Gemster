@@ -8,7 +8,7 @@ import java.util.TimerTask;
 
 public class RepeatTimerTask extends TimerTask {
 
-    public static final int TYPE_GET_FEED = 0;
+    public static final int TYPE_GET_DNA = 0;
     public static final int TYPE_TRY_EVOLUTION = 1;
 
     private final int mTimeRemain;
@@ -20,7 +20,7 @@ public class RepeatTimerTask extends TimerTask {
     private EventListener mListener;
 
     public interface EventListener {
-        void onTimerFeedEvent(int type, int mode);
+        void onTimerDNAEvent(int type, int mode);
     }
 
     public void setEventListener(EventListener listener) {
@@ -35,10 +35,10 @@ public class RepeatTimerTask extends TimerTask {
     @Override
     public void run() {
         if (mTimeRemain == 0) {
-            mListener.onTimerFeedEvent(mType, EVENT_COMPLETE);
+            mListener.onTimerDNAEvent(mType, EVENT_COMPLETE);
 
         } else if (mTimeRemain > 0) {
-            mListener.onTimerFeedEvent(mType, EVENT_REMAIN);
+            mListener.onTimerDNAEvent(mType, EVENT_REMAIN);
         }
     }
 }
