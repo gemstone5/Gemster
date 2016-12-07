@@ -24,6 +24,16 @@ public class EffectManager implements CustomAnimationDrawable.IAnimationFinishLi
 
     private final int ANI_DURATION = 40;
 
+    public interface EffectCompleteListener {
+        void complete(AnimationDrawable animation);
+    }
+
+    private EffectCompleteListener mListener;
+
+    public void setListener(EffectCompleteListener listener) {
+        mListener = listener;
+    }
+
     public EffectManager(Context context) {
 
         mAniEvolutionSuccess = new CustomAnimationDrawable();
@@ -95,6 +105,10 @@ public class EffectManager implements CustomAnimationDrawable.IAnimationFinishLi
         view.startAnimation(animSet);
     }
 
+    public boolean isEvolutionEffect(AnimationDrawable animation) {
+        return animation.equals(mAniEvolutionSuccess) || animation.equals(mAniEvolutionFailed);
+    }
+
     @Override
     public void onAnimationFinished(AnimationDrawable animation, ImageView view) {
         if (animation.isRunning()) {
@@ -102,6 +116,9 @@ public class EffectManager implements CustomAnimationDrawable.IAnimationFinishLi
         }
         if (view != null) {
             view.setVisibility(View.GONE);
+        }
+        if (mListener != null) {
+            mListener.complete(animation);
         }
     }
 }

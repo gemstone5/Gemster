@@ -3,6 +3,7 @@ package gemstone.gemster;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.drawable.AnimationDrawable;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +20,7 @@ import java.text.DecimalFormat;
  * Created by WONSEOK OH on 2016-12-04.
  */
 
-public class MainInterfaceManager {
+public class MainInterfaceManager implements EffectManager.EffectCompleteListener {
 
     private final Context mContext;
     private final Activity mActivity;
@@ -64,6 +65,7 @@ public class MainInterfaceManager {
         mActivity = activity;
 
         mEffectManager = new EffectManager(mContext);
+        mEffectManager.setListener(this);
     }
 
     public void init() {
@@ -220,6 +222,14 @@ public class MainInterfaceManager {
             case DEBUG_INFO_SET:
                 mTextViewDebug.setText((String) param);
                 break;
+        }
+    }
+
+    @Override
+    public void complete(AnimationDrawable animation) {
+        if (mEffectManager.isEvolutionEffect(animation)) {
+            mImageButtonFeed.setEnabled(true);
+            mImageButtonEvolution.setEnabled(true);
         }
     }
 
