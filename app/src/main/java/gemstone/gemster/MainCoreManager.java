@@ -66,6 +66,8 @@ public class MainCoreManager implements MainInterfaceManager.EventListener, Repe
         mHandler.post(new Runnable() {
             @Override
             public void run() {
+                mInterfaceManager.call(MainInterfaceManager.CallMode.FEED_BUTTON_ENABLE);
+                mInterfaceManager.call(MainInterfaceManager.CallMode.EVOLUTION_BUTTON_ENABLE);
                 mInterfaceManager.call(MainInterfaceManager.CallMode.FEED_COUNT_SET);
                 setDebugDescription(Common.DEBUG_DEFAULT);
             }
@@ -104,8 +106,6 @@ public class MainCoreManager implements MainInterfaceManager.EventListener, Repe
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                mInterfaceManager.call(MainInterfaceManager.CallMode.FEED_BUTTON_ENABLE);
-                mInterfaceManager.call(MainInterfaceManager.CallMode.EVOLUTION_BUTTON_ENABLE);
                 mInterfaceManager.call(MainInterfaceManager.CallMode.GAME_VIEW_SET);
                 if (result) {
                     mInterfaceManager.call(MainInterfaceManager.CallMode.MONSTER_EFFECT_EVOLUTION_SUCCESS_START);
