@@ -2,7 +2,6 @@ package gemstone.gemster;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.TypedArray;
 
 /**
  * Created by WONSEOK OH on 2016-12-04.
@@ -12,6 +11,7 @@ public class Common {
 
     private static final String PREF_MAIN = "pref_main";
     public static final String MAIN_INIT = "main_init";
+    public static final String MAIN_SPEC = "main_spec";
     public static final String MAIN_TIER = "main_tier";
     public static final String MAIN_DNA = "main_DNA";
     public static final String MAIN_DNA_USE = "main_DNA_use";
@@ -32,7 +32,7 @@ public class Common {
     }
 
     private static boolean isIntegerValue(String key) {
-        return MAIN_TIER.equals(key) || MAIN_DNA.equals(key) || MAIN_DNA_USE.equals(key);
+        return MAIN_SPEC.equals(key) || MAIN_TIER.equals(key) || MAIN_DNA.equals(key) || MAIN_DNA_USE.equals(key);
     }
 
     public static String getDefaultValue(String key) {
@@ -59,19 +59,33 @@ public class Common {
         // init shared pref values if have not initialized yet
         if ("".equals(getPrefData(context, MAIN_INIT))) {
             setPrefData(context, MAIN_INIT, getDefaultValue(MAIN_INIT));
+            setPrefData(context, MAIN_SPEC, getDefaultValue(MAIN_SPEC));
             setPrefData(context, MAIN_TIER, getDefaultValue(MAIN_TIER));
             setPrefData(context, MAIN_DNA, getDefaultValue(MAIN_DNA));
             setPrefData(context, MAIN_DNA_USE, getDefaultValue(MAIN_DNA_USE));
         }
     }
 
-    public static boolean isMaxTier(Context context) {
+    public static boolean isExceptionalTier(Context context) {
+        int maxTier = getMaxTier(context);
         int tier = (int) Common.getPrefData(context, Common.MAIN_TIER);
-        TypedArray arrPerProb = context.getResources().obtainTypedArray(R.array.array_evol_name);
-        if (tier + 1 >= arrPerProb.length()) {
+        if (tier + 1 >= maxTier) {
             return true;
         }
         return false;
+    }
+
+    public static int getMaxTier(Context context) {
+        int spec = (int) Common.getPrefData(context, Common.MAIN_SPEC);
+        int[] arrMaxTier = context.getResources().getIntArray(R.array.array_max_tier_of_spec);
+        return arrMaxTier[spec];
+    }
+
+    public static int getGemDrawableId(Context context, int spec, int tier) {
+        String name = "gem_image_";
+        name += spec + "_" + tier;
+        int id = context.getResources().getIdentifier(name, "drawable", context.getPackageName());
+        return id;
     }
 
 }

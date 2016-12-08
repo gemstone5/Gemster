@@ -44,9 +44,7 @@ public class MainCoreManager implements MainInterfaceManager.EventListener, Repe
     }
 
     private void handleExceptionalTierCase() {
-        final int tier = (int) Common.getPrefData(mContext, Common.MAIN_TIER);
-        TypedArray arrImg = mContext.getResources().obtainTypedArray(R.array.array_evol_image);
-        if (tier >= arrImg.length()) {
+        if (Common.isExceptionalTier(mContext)) {
             Common.setPrefData(mContext, Common.MAIN_TIER, "0");
         }
     }
@@ -95,7 +93,7 @@ public class MainCoreManager implements MainInterfaceManager.EventListener, Repe
     }
 
     private void tryEvolution() {
-        if (Common.isMaxTier(mContext)) {
+        if (Common.isExceptionalTier(mContext)) {
             mInterfaceManager.call(MainInterfaceManager.CallMode.UTIL_BUTTONS_ENABLE);
             return;
         }

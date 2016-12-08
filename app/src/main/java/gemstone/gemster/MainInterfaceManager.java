@@ -213,10 +213,9 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
     }
 
     private void setImageViewMonsterImage() {
+        int spec = (int) Common.getPrefData(mContext, Common.MAIN_SPEC);
         int tier = (int) Common.getPrefData(mContext, Common.MAIN_TIER);
-        TypedArray arrImg = mContext.getResources().obtainTypedArray(R.array.array_evol_image);
-
-        int id = arrImg.getResourceId(tier, 0);
+        int id = Common.getGemDrawableId(mContext, spec, tier);
         mImageButtonMonster.setImageResource(id);
 
         mEffectManager.enableBreathAnimation(mImageButtonMonster);

@@ -1,23 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <array name="array_evol_image">
-        <item>@drawable/evol0</item>
-        <item>@drawable/evol1</item>
-        <item>@drawable/evol2</item>
-        <item>@drawable/evol3</item>
-    </array>
+
+    <integer-array name="array_max_tier_of_spec">
+        <item>7</item>
+    </integer-array>
 
     <string-array name="array_evol_name">
-        <item>"1티어 공룡몬"</item>
-        <item>"2티어 큰 공룡몬"</item>
-        <item>"3티어 대따 큰 공룡몬"</item>
-        <item>"4티어 왕 큰 공룡몬"</item>
+        <item>"1티어 알"</item>
+        <item>"2티어 작은 공룡몬"</item>
+        <item>"3티어 꼬마 큰 공룡몬"</item>
+        <item>"4티어 공룡몬"</item>
+        <item>"5티어 큰 공룡몬"</item>
+        <item>"6티어 대따 큰 공룡몬"</item>
+        <item>"7티어 왕 큰 공룡몬"</item>
     </string-array>
 
     <array name="array_evol_prob">
+        <item>0.5</item>
         <item>0.3</item>
-        <item>0.9</item>
-        <item>0.9</item>
-        <item>0.9</item>
+        <item>0.1</item>
+        <item>0.05</item>
+        <item>0.01</item>
+        <item>0.005</item>
+        <item>0.0</item>
     </array>
 </resources>
