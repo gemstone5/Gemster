@@ -2,7 +2,7 @@
 <resources>
 
     <integer-array name="array_max_tier_of_spec">
-        <item>7</item>
+        <item>8</item>
     </integer-array>
 
     <string-array name="array_evol_name">
