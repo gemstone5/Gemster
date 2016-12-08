@@ -4,32 +4,56 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/layout_status"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:layout_alignParentTop="true"
-        android:background="@color/color_959595"
-        android:gravity="center_horizontal"
-        android:orientation="horizontal"
-        android:padding="10dp">
+        android:background="@color/color_959595">
 
         <ImageView
             android:id="@+id/imageView_DNA"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="30dp"
+            android:scaleType="fitCenter"
             android:src="@mipmap/ic_launcher" />
 
         <TextView
             android:id="@+id/textView_DNA_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="15dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/imageView_DNA"
             android:text="0개"
             android:textSize="20dp" />
 
-    </LinearLayout>
+        <ImageButton
+            android:id="@+id/imageButton_setting"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="30dp"
+            android:background="@android:color/transparent"
+            android:padding="5dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/setting_icon" />
+
+        <ImageButton
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/imageButton_setting"
+            android:background="@android:color/transparent"
+            android:padding="5dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/monster_book_icon" />
+
+    </RelativeLayout>
 
     <ImageView
         android:id="@+id/imageView_monster_frame"
