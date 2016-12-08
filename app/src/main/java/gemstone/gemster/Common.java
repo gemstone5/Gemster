@@ -2,6 +2,7 @@ package gemstone.gemster;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.TypedArray;
 
 /**
  * Created by WONSEOK OH on 2016-12-04.
@@ -62,6 +63,15 @@ public class Common {
             setPrefData(context, MAIN_DNA, getDefaultValue(MAIN_DNA));
             setPrefData(context, MAIN_DNA_USE, getDefaultValue(MAIN_DNA_USE));
         }
+    }
+
+    public static boolean isMaxTier(Context context) {
+        int tier = (int) Common.getPrefData(context, Common.MAIN_TIER);
+        TypedArray arrPerProb = context.getResources().obtainTypedArray(R.array.array_evol_name);
+        if (tier + 1 >= arrPerProb.length()) {
+            return true;
+        }
+        return false;
     }
 
 }

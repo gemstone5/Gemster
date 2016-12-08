@@ -96,6 +96,12 @@ public class MainCoreManager implements MainInterfaceManager.EventListener, Repe
     }
 
     private void tryEvolution() {
+        if (Common.isMaxTier(mContext)) {
+            mInterfaceManager.call(MainInterfaceManager.CallMode.DNA_BUTTON_ENABLE);
+            mInterfaceManager.call(MainInterfaceManager.CallMode.EVOLUTION_BUTTON_ENABLE);
+            return;
+        }
+
         int DNA = (int) Common.getPrefData(mContext, Common.MAIN_DNA);
         int useDNA = (int) Common.getPrefData(mContext, Common.MAIN_DNA_USE);
 
