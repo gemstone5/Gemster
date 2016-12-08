@@ -20,8 +20,10 @@ import java.util.TimerTask;
 
 public class EffectManager implements CustomAnimationDrawable.IAnimationFinishListener {
 
-    private final CustomAnimationDrawable mAniEvolutionSuccess;
-    private final CustomAnimationDrawable mAniEvolutionFailed;
+    private Context mContext;
+
+    private CustomAnimationDrawable mAniEvolutionSuccess;
+    private CustomAnimationDrawable mAniEvolutionFailed;
 
     private final int ANI_DURATION = 40;
 
@@ -44,31 +46,40 @@ public class EffectManager implements CustomAnimationDrawable.IAnimationFinishLi
 
     public EffectManager(Context context) {
 
+        mContext = context;
+
+        initAniEvolutionSuccess();
+        initAniEvolutionFailed();
+
+        initAnimationListener();
+    }
+
+    private void initAniEvolutionSuccess() {
         mAniEvolutionSuccess = new CustomAnimationDrawable();
         mAniEvolutionSuccess.setOneShot(true);
         for (int idx = 1; idx <= 35; idx++) {
             String name = "success_effect00";
             if (idx < 10) name += "0";
             name += idx;
-            int id = context.getResources().getIdentifier(name, "drawable", context.getPackageName());
+            int id = mContext.getResources().getIdentifier(name, "drawable", mContext.getPackageName());
             Drawable drawable;
-            drawable = ContextCompat.getDrawable(context, id);
+            drawable = ContextCompat.getDrawable(mContext, id);
             mAniEvolutionSuccess.addFrame(drawable, ANI_DURATION);
         }
+    }
 
+    private void initAniEvolutionFailed() {
         mAniEvolutionFailed = new CustomAnimationDrawable();
         mAniEvolutionFailed.setOneShot(true);
         for (int idx = 1; idx <= 30; idx++) {
             String name = "failed_effect00";
             if (idx < 10) name += "0";
             name += idx;
-            int id = context.getResources().getIdentifier(name, "drawable", context.getPackageName());
+            int id = mContext.getResources().getIdentifier(name, "drawable", mContext.getPackageName());
             Drawable drawable;
-            drawable = ContextCompat.getDrawable(context, id);
+            drawable = ContextCompat.getDrawable(mContext, id);
             mAniEvolutionFailed.addFrame(drawable, ANI_DURATION);
         }
-
-        initAnimationListener();
     }
 
     private Animation getAniActionUpDown(boolean isDown) {
@@ -175,8 +186,8 @@ public class EffectManager implements CustomAnimationDrawable.IAnimationFinishLi
         mIsBreathAnimationEnabled = false;
     }
 
-    public void enableBreathAnimation(Context context, ImageView view) {
-        Animation anim = AnimationUtils.loadAnimation(context, R.anim.anim_scale_breath);
+    public void enableBreathAnimation(ImageView view) {
+        Animation anim = AnimationUtils.loadAnimation(mContext, R.anim.anim_scale_breath);
         view.startAnimation(anim);
         mIsBreathAnimationEnabled = true;
     }

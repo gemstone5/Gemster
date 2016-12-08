@@ -171,9 +171,7 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
         mImageButtonEvolution = (ImageButton) mActivity.findViewById(R.id.imageButton_evolution);
         mTextViewDNAUse = (TextView) mActivity.findViewById(R.id.textView_DNA_use);
         mImageButtonDnaUp = (ImageButton) mActivity.findViewById(R.id.imageButton_DNA_up);
-        mImageButtonDnaUp.setTag("mImageButtonDnaUp");
         mImageButtonDnaDown = (ImageButton) mActivity.findViewById(R.id.imageButton_DNA_down);
-        mImageButtonDnaDown.setTag("mImageButtonDnaDown");
 
         setImageViewMonsterLayoutCollection();
 
@@ -221,7 +219,7 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
         int id = arrImg.getResourceId(tier, 0);
         mImageButtonMonster.setImageResource(id);
 
-        mEffectManager.enableBreathAnimation(mContext, mImageButtonMonster);
+        mEffectManager.enableBreathAnimation(mImageButtonMonster);
     }
 
     private void setTextViewMonsterName() {
@@ -344,7 +342,7 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
         if (EffectManager.CompleteEventMode.EVOLUTION.equals(mode)) {
             setUtilButtonsEnabled(true);
         } else if (EffectManager.CompleteEventMode.BREATH_INTERCEPT.equals(mode)) {
-            mEffectManager.enableBreathAnimation(mContext, mImageButtonMonster);
+            mEffectManager.enableBreathAnimation(mImageButtonMonster);
         }
     }
 
