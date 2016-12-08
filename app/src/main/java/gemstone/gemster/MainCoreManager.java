@@ -87,8 +87,7 @@ public class MainCoreManager implements MainInterfaceManager.EventListener, Repe
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                mInterfaceManager.call(MainInterfaceManager.CallMode.DNA_BUTTON_ENABLE);
-                mInterfaceManager.call(MainInterfaceManager.CallMode.EVOLUTION_BUTTON_ENABLE);
+                mInterfaceManager.call(MainInterfaceManager.CallMode.UTIL_BUTTONS_ENABLE);
                 mInterfaceManager.call(MainInterfaceManager.CallMode.DNA_COUNT_SET);
                 setDebugDescription(Common.DEBUG_DEFAULT);
             }
@@ -97,8 +96,7 @@ public class MainCoreManager implements MainInterfaceManager.EventListener, Repe
 
     private void tryEvolution() {
         if (Common.isMaxTier(mContext)) {
-            mInterfaceManager.call(MainInterfaceManager.CallMode.DNA_BUTTON_ENABLE);
-            mInterfaceManager.call(MainInterfaceManager.CallMode.EVOLUTION_BUTTON_ENABLE);
+            mInterfaceManager.call(MainInterfaceManager.CallMode.UTIL_BUTTONS_ENABLE);
             return;
         }
 
@@ -106,8 +104,7 @@ public class MainCoreManager implements MainInterfaceManager.EventListener, Repe
         int useDNA = (int) Common.getPrefData(mContext, Common.MAIN_DNA_USE);
 
         if (DNA < 1) {
-            mInterfaceManager.call(MainInterfaceManager.CallMode.DNA_BUTTON_ENABLE);
-            mInterfaceManager.call(MainInterfaceManager.CallMode.EVOLUTION_BUTTON_ENABLE);
+            mInterfaceManager.call(MainInterfaceManager.CallMode.UTIL_BUTTONS_ENABLE);
             return;
         }
 

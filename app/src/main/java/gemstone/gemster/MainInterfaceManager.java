@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,7 +61,7 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
     }
 
     public enum CallMode {
-        DNA_BUTTON_ENABLE, DNA_BUTTON_DISABLE, EVOLUTION_BUTTON_ENABLE, EVOLUTION_BUTTON_DISABLE, DNA_USE_SET,
+        UTIL_BUTTONS_ENABLE, UTIL_BUTTONS_DISABLE, DNA_USE_SET,
         DNA_COUNT_SET, MONSTER_IMAGE_SET, MONSTER_NAME_SET, MONSTER_PROB_SET,
         MONSTER_EFFECT_EVOLUTION_SUCCESS_START, MONSTER_EFFECT_EVOLUTION_FAILED_START,
         GAME_VIEW_SET, DEBUG_INFO_SET
@@ -129,6 +130,7 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
         mOnTouchListener = new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent event) {
+                Log.d("gemtest", "onTouch view : " + view.getTag());
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     if (view.equals(mImageButtonMonster)) {
                         mEffectManager.disableBreathAnimation();
@@ -148,14 +150,12 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
     }
 
     private void getDNA() {
-        mImageButtonDNA.setEnabled(false);
-        mImageButtonEvolution.setEnabled(false);
+        setUtilButtonsEnabled(false);
         mListener.onMainInterfaceEvent(EventMode.EVENT_GET_DNA, null);
     }
 
     private void tryEvolution() {
-        mImageButtonDNA.setEnabled(false);
-        mImageButtonEvolution.setEnabled(false);
+        setUtilButtonsEnabled(false);
         mListener.onMainInterfaceEvent(EventMode.EVENT_TRY_EVOLUTION, null);
     }
 
@@ -171,7 +171,9 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
         mImageButtonEvolution = (ImageButton) mActivity.findViewById(R.id.imageButton_evolution);
         mTextViewDNAUse = (TextView) mActivity.findViewById(R.id.textView_DNA_use);
         mImageButtonDnaUp = (ImageButton) mActivity.findViewById(R.id.imageButton_DNA_up);
+        mImageButtonDnaUp.setTag("mImageButtonDnaUp");
         mImageButtonDnaDown = (ImageButton) mActivity.findViewById(R.id.imageButton_DNA_down);
+        mImageButtonDnaDown.setTag("mImageButtonDnaDown");
 
         setImageViewMonsterLayoutCollection();
 
@@ -271,6 +273,13 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
         mTextViewDNAUse.setText(String.valueOf(count));
     }
 
+    private void setUtilButtonsEnabled(boolean enable) {
+        mImageButtonDNA.setEnabled(enable);
+        mImageButtonEvolution.setEnabled(enable);
+        mImageButtonDnaUp.setEnabled(enable);
+        mImageButtonDnaDown.setEnabled(enable);
+    }
+
     private void setListener() {
         mImageButtonMonster.setOnTouchListener(mOnTouchListener);
         mImageButtonDNA.setOnTouchListener(mOnTouchListener);
@@ -288,18 +297,12 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
 
     public void call(CallMode mode, Object param) {
         switch (mode) {
-            case DNA_BUTTON_ENABLE:
-                mImageButtonDNA.setEnabled(true);
-                break;
-            case DNA_BUTTON_DISABLE:
-                mImageButtonDNA.setEnabled(false);
+            case UTIL_BUTTONS_ENABLE:
+                setUtilButtonsEnabled(true);
                 break;
 
-            case EVOLUTION_BUTTON_ENABLE:
-                mImageButtonEvolution.setEnabled(true);
-                break;
-            case EVOLUTION_BUTTON_DISABLE:
-                mImageButtonEvolution.setEnabled(true);
+            case UTIL_BUTTONS_DISABLE:
+                setUtilButtonsEnabled(false);
                 break;
 
             case DNA_USE_SET:
@@ -339,8 +342,7 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
     @Override
     public void complete(EffectManager.CompleteEventMode mode) {
         if (EffectManager.CompleteEventMode.EVOLUTION.equals(mode)) {
-            mImageButtonDNA.setEnabled(true);
-            mImageButtonEvolution.setEnabled(true);
+            setUtilButtonsEnabled(true);
         } else if (EffectManager.CompleteEventMode.BREATH_INTERCEPT.equals(mode)) {
             mEffectManager.enableBreathAnimation(mContext, mImageButtonMonster);
         }

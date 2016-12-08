@@ -23,9 +23,6 @@ public class EffectManager implements CustomAnimationDrawable.IAnimationFinishLi
     private final CustomAnimationDrawable mAniEvolutionSuccess;
     private final CustomAnimationDrawable mAniEvolutionFailed;
 
-    private Animation mAniActionUp;
-    private Animation mAniActionDown;
-
     private final int ANI_DURATION = 40;
 
     private boolean mIsBreathAnimationEnabled = false;
@@ -71,14 +68,10 @@ public class EffectManager implements CustomAnimationDrawable.IAnimationFinishLi
             mAniEvolutionFailed.addFrame(drawable, ANI_DURATION);
         }
 
-        mAniActionDown = initAniActionUpDown(true);
-        mAniActionUp = initAniActionUpDown(false);
-
         initAnimationListener();
-        setAnimationListener();
     }
 
-    private Animation initAniActionUpDown(boolean isDown) {
+    private Animation getAniActionUpDown(boolean isDown) {
         float startValue = isDown ? 1f : 1.05f;
         float endValue = isDown ? 1.05f : 1f;
         Animation animation = new ScaleAnimation(
@@ -89,6 +82,7 @@ public class EffectManager implements CustomAnimationDrawable.IAnimationFinishLi
         animation.setFillAfter(true); // Needed to keep the result of the animation
         animation.setDuration(100);
         animation.setInterpolator(new LinearInterpolator());
+        animation.setAnimationListener(mAnimationListener);
         return animation;
     }
 
@@ -101,8 +95,7 @@ public class EffectManager implements CustomAnimationDrawable.IAnimationFinishLi
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                if (animation == null) return;
-                if (!mIsBreathAnimationEnabled && (animation.equals(mAniActionDown) || animation.equals(mAniActionUp))) {
+                if (!mIsBreathAnimationEnabled) {
                     if (mListener != null) {
                         mListener.complete(CompleteEventMode.BREATH_INTERCEPT);
                     }
@@ -114,11 +107,6 @@ public class EffectManager implements CustomAnimationDrawable.IAnimationFinishLi
 
             }
         };
-    }
-
-    private void setAnimationListener() {
-        mAniActionDown.setAnimationListener(mAnimationListener);
-        mAniActionUp.setAnimationListener(mAnimationListener);
     }
 
     public void startSuccessEffect(ImageView view) {
@@ -156,8 +144,8 @@ public class EffectManager implements CustomAnimationDrawable.IAnimationFinishLi
         timer.schedule(timerTask, totalDuration);
     }
 
-    private void processClickScaleAnimation(View view, boolean isStart) {
-        view.startAnimation(isStart ? mAniActionDown : mAniActionUp);
+    private void processClickScaleAnimation(View view, boolean isDown) {
+        view.startAnimation(getAniActionUpDown(isDown));
     }
 
     public void startClickScaleAnimation(View view) {
