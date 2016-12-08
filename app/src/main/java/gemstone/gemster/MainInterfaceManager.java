@@ -3,7 +3,6 @@ package gemstone.gemster;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.drawable.AnimationDrawable;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
@@ -131,6 +130,9 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
             @Override
             public boolean onTouch(View view, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    if (view.equals(mImageButtonMonster)) {
+                        mEffectManager.disableBreathAnimation();
+                    }
                     startClickScaleAnimation(view);
                     processActionDown(view);
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
@@ -220,6 +222,8 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
 
         int id = arrImg.getResourceId(tier, 0);
         mImageButtonMonster.setImageResource(id);
+
+        mEffectManager.enableBreathAnimation(mContext, mImageButtonMonster);
     }
 
     private void setTextViewMonsterName() {
@@ -337,10 +341,12 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
     }
 
     @Override
-    public void complete(AnimationDrawable animation) {
-        if (mEffectManager.isEvolutionEffect(animation)) {
+    public void complete(EffectManager.CompleteEventMode mode) {
+        if (EffectManager.CompleteEventMode.EVOLUTION.equals(mode)) {
             mImageButtonDNA.setEnabled(true);
             mImageButtonEvolution.setEnabled(true);
+        } else if (EffectManager.CompleteEventMode.BREATH_INTERCEPT.equals(mode)) {
+            mEffectManager.enableBreathAnimation(mContext, mImageButtonMonster);
         }
     }
 

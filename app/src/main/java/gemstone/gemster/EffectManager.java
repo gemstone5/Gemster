@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
@@ -22,13 +23,23 @@ public class EffectManager implements CustomAnimationDrawable.IAnimationFinishLi
     private final CustomAnimationDrawable mAniEvolutionSuccess;
     private final CustomAnimationDrawable mAniEvolutionFailed;
 
+    private Animation mAniActionUp;
+    private Animation mAniActionDown;
+
     private final int ANI_DURATION = 40;
 
+    private boolean mIsBreathAnimationEnabled = false;
+
+    public enum CompleteEventMode {
+        EVOLUTION, BREATH_INTERCEPT
+    }
+
     public interface EffectCompleteListener {
-        void complete(AnimationDrawable animation);
+        void complete(CompleteEventMode mode);
     }
 
     private EffectCompleteListener mListener;
+    private Animation.AnimationListener mAnimationListener;
 
     public void setListener(EffectCompleteListener listener) {
         mListener = listener;
@@ -59,6 +70,55 @@ public class EffectManager implements CustomAnimationDrawable.IAnimationFinishLi
             drawable = ContextCompat.getDrawable(context, id);
             mAniEvolutionFailed.addFrame(drawable, ANI_DURATION);
         }
+
+        mAniActionDown = initAniActionUpDown(true);
+        mAniActionUp = initAniActionUpDown(false);
+
+        initAnimationListener();
+        setAnimationListener();
+    }
+
+    private Animation initAniActionUpDown(boolean isDown) {
+        float startValue = isDown ? 1f : 1.05f;
+        float endValue = isDown ? 1.05f : 1f;
+        Animation animation = new ScaleAnimation(
+                startValue, endValue, // Start and end values for the X axis scaling
+                startValue, endValue, // Start and end values for the Y axis scaling
+                Animation.RELATIVE_TO_SELF, 0.5f, // Pivot point of X scaling
+                Animation.RELATIVE_TO_SELF, 0.5f); // Pivot point of Y scaling
+        animation.setFillAfter(true); // Needed to keep the result of the animation
+        animation.setDuration(100);
+        animation.setInterpolator(new LinearInterpolator());
+        return animation;
+    }
+
+    private void initAnimationListener() {
+        mAnimationListener = new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                if (animation == null) return;
+                if (!mIsBreathAnimationEnabled && (animation.equals(mAniActionDown) || animation.equals(mAniActionUp))) {
+                    if (mListener != null) {
+                        mListener.complete(CompleteEventMode.BREATH_INTERCEPT);
+                    }
+                }
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        };
+    }
+
+    private void setAnimationListener() {
+        mAniActionDown.setAnimationListener(mAnimationListener);
+        mAniActionUp.setAnimationListener(mAnimationListener);
     }
 
     public void startSuccessEffect(ImageView view) {
@@ -97,18 +157,7 @@ public class EffectManager implements CustomAnimationDrawable.IAnimationFinishLi
     }
 
     private void processClickScaleAnimation(View view, boolean isStart) {
-        float startValue = isStart ? 1f : 1.05f;
-        float endValue = isStart ? 1.05f : 1f;
-
-        Animation anim = new ScaleAnimation(
-                startValue, endValue, // Start and end values for the X axis scaling
-                startValue, endValue, // Start and end values for the Y axis scaling
-                Animation.RELATIVE_TO_SELF, 0.5f, // Pivot point of X scaling
-                Animation.RELATIVE_TO_SELF, 0.5f); // Pivot point of Y scaling
-        anim.setFillAfter(true); // Needed to keep the result of the animation
-        anim.setDuration(100);
-        anim.setInterpolator(new LinearInterpolator());
-        view.startAnimation(anim);
+        view.startAnimation(isStart ? mAniActionDown : mAniActionUp);
     }
 
     public void startClickScaleAnimation(View view) {
@@ -117,10 +166,6 @@ public class EffectManager implements CustomAnimationDrawable.IAnimationFinishLi
 
     public void endClickScaleAnimation(View view) {
         processClickScaleAnimation(view, false);
-    }
-
-    public boolean isEvolutionEffect(AnimationDrawable animation) {
-        return animation.equals(mAniEvolutionSuccess) || animation.equals(mAniEvolutionFailed);
     }
 
     @Override
@@ -132,7 +177,19 @@ public class EffectManager implements CustomAnimationDrawable.IAnimationFinishLi
             view.setVisibility(View.GONE);
         }
         if (mListener != null) {
-            mListener.complete(animation);
+            if (animation.equals(mAniEvolutionSuccess) || animation.equals(mAniEvolutionFailed)) {
+                mListener.complete(CompleteEventMode.EVOLUTION);
+            }
         }
+    }
+
+    public void disableBreathAnimation() {
+        mIsBreathAnimationEnabled = false;
+    }
+
+    public void enableBreathAnimation(Context context, ImageView view) {
+        Animation anim = AnimationUtils.loadAnimation(context, R.anim.anim_scale_breath);
+        view.startAnimation(anim);
+        mIsBreathAnimationEnabled = true;
     }
 }
