@@ -60,7 +60,7 @@
         android:id="@+id/layout_desc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/imageButton_monster"
+        android:layout_below="@id/imageView_monster_frame"
         android:gravity="center_horizontal"
         android:orientation="vertical"
         android:paddingBottom="15dp"
