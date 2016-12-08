@@ -13,6 +13,7 @@
         <item>"5티어 큰 공룡몬"</item>
         <item>"6티어 대따 큰 공룡몬"</item>
         <item>"7티어 왕 큰 공룡몬"</item>
+        <item>"8티어 궁극의 공룡몬"</item>
     </string-array>
 
     <array name="array_evol_prob">
@@ -22,6 +23,7 @@
         <item>0.05</item>
         <item>0.01</item>
         <item>0.005</item>
+        <item>0.001</item>
         <item>0.0</item>
     </array>
 </resources>
