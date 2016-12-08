@@ -2,6 +2,7 @@ package gemstone.gemster;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.TypedArray;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -28,6 +29,8 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
 
     private TextView mTextViewDebug;
     private TextView mTextViewDNACount;
+    private ImageButton mImageButtonSetting;
+    private ImageButton mImageButtonMonsterBook;
     private ImageView mImageViewMonsterFrame;
     private ImageButton mImageButtonMonster;
     private ImageView mImageViewMonsterEffect;
@@ -110,7 +113,10 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
 
     private void processActionUp(View view) {
         if (view == null) return;
-        if (view.equals(mImageButtonDNA)) {
+        if (view.equals(mImageButtonSetting)) {
+        } else if (view.equals(mImageButtonMonsterBook)) {
+            openMonsterBook();
+        } else if (view.equals(mImageButtonDNA)) {
             getDNA();
         } else if (view.equals(mImageButtonEvolution)) {
             tryEvolution();
@@ -149,6 +155,10 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
         };
     }
 
+    private void openMonsterBook() {
+        mContext.startActivity(new Intent(mContext, MonsterBookActivity.class));
+    }
+
     private void getDNA() {
         setUtilButtonsEnabled(false);
         mListener.onMainInterfaceEvent(EventMode.EVENT_GET_DNA, null);
@@ -162,6 +172,8 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
     private void initViews() {
         mTextViewDebug = (TextView) mActivity.findViewById(R.id.textView_debug);
         mTextViewDNACount = (TextView) mActivity.findViewById(R.id.textView_DNA_count);
+        mImageButtonSetting = (ImageButton) mActivity.findViewById(R.id.imageButton_setting);
+        mImageButtonMonsterBook = (ImageButton) mActivity.findViewById(R.id.imageButton_monster_book);
         mImageViewMonsterFrame = (ImageView) mActivity.findViewById(R.id.imageView_monster_frame);
         mImageButtonMonster = (ImageButton) mActivity.findViewById(R.id.imageButton_monster);
         mImageViewMonsterEffect = (ImageView) mActivity.findViewById(R.id.imageView_monster_effect);
@@ -278,6 +290,8 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
     }
 
     private void setListener() {
+        mImageButtonSetting.setOnTouchListener(mOnTouchListener);
+        mImageButtonMonsterBook.setOnTouchListener(mOnTouchListener);
         mImageButtonMonster.setOnTouchListener(mOnTouchListener);
         mImageButtonDNA.setOnTouchListener(mOnTouchListener);
         mImageButtonEvolution.setOnTouchListener(mOnTouchListener);
