@@ -59,14 +59,12 @@ public class RepeatUpdater {
     }
 
     private void increment() {
-        Log.d("gemtest", "increment");
         if (mListener != null) {
             mListener.onRepeatUpdaterEvent(EventMode.EVENT_INCREMENT, null);
         }
     }
 
     private void decrement() {
-        Log.d("gemtest", "decrement");
         if (mListener != null) {
             mListener.onRepeatUpdaterEvent(EventMode.EVENT_DECREMENT, null);
         }

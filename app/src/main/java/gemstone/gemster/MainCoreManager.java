@@ -31,6 +31,9 @@ public class MainCoreManager implements MainInterfaceManager.EventListener, Repe
     public MainCoreManager(Context context, Activity activity) {
         mContext = context;
 
+        // Handle exceptional tier case
+        handleExceptionalTierCase();
+
         // Init repeat updater
         initRepeatUpdater();
 
@@ -38,6 +41,14 @@ public class MainCoreManager implements MainInterfaceManager.EventListener, Repe
         mInterfaceManager = new MainInterfaceManager(context, activity);
         mInterfaceManager.setEventListener(this);
         mInterfaceManager.init();
+    }
+
+    private void handleExceptionalTierCase() {
+        final int tier = (int) Common.getPrefData(mContext, Common.MAIN_TIER);
+        TypedArray arrImg = mContext.getResources().obtainTypedArray(R.array.array_evol_image);
+        if (tier >= arrImg.length()) {
+            Common.setPrefData(mContext, Common.MAIN_TIER, "0");
+        }
     }
 
     private void initRepeatUpdater() {
@@ -86,38 +97,43 @@ public class MainCoreManager implements MainInterfaceManager.EventListener, Repe
 
     private void tryEvolution() {
         int DNA = (int) Common.getPrefData(mContext, Common.MAIN_DNA);
+        int useDNA = (int) Common.getPrefData(mContext, Common.MAIN_DNA_USE);
+
         if (DNA < 1) {
             mInterfaceManager.call(MainInterfaceManager.CallMode.DNA_BUTTON_ENABLE);
             mInterfaceManager.call(MainInterfaceManager.CallMode.EVOLUTION_BUTTON_ENABLE);
             return;
         }
 
-        int useDNA = (int) Common.getPrefData(mContext, Common.MAIN_DNA_USE);
         DNA -= useDNA;
         Common.setPrefData(mContext, Common.MAIN_DNA, String.valueOf(DNA));
-
-        if (DNA == 0 || useDNA > DNA) {
-            useDNA = ((DNA == 0) ? 1 : DNA);
-            Common.setPrefData(mContext, Common.MAIN_DNA_USE, String.valueOf(useDNA));
-            mInterfaceManager.call(MainInterfaceManager.CallMode.DNA_USE_SET);
-        }
-
         mInterfaceManager.call(MainInterfaceManager.CallMode.DNA_COUNT_SET);
 
         mTimeRemain = (int) (Common.EVOLUTION_TIME / Common.TIME_DELAY);
         processRepeatTimer(RepeatTimerTask.TYPE_TRY_EVOLUTION);
     }
 
+    private void setUseDNA() {
+        int DNA = (int) Common.getPrefData(mContext, Common.MAIN_DNA);
+        int useDNA = (int) Common.getPrefData(mContext, Common.MAIN_DNA_USE);
+
+        if (DNA == 0 || useDNA > DNA) {
+            useDNA = ((DNA == 0) ? 1 : DNA);
+            Common.setPrefData(mContext, Common.MAIN_DNA_USE, String.valueOf(useDNA));
+        }
+    }
+
     private void completeTryEvolution() {
-        final boolean result;
         final int tier = (int) Common.getPrefData(mContext, Common.MAIN_TIER);
         final int useDNA = (int) Common.getPrefData(mContext, Common.MAIN_DNA_USE);
-        TypedArray arrPerProb = mContext.getResources().obtainTypedArray(R.array.array_evol_prob);
-        float perProb = arrPerProb.getFloat(tier, 0F);
-        float prob = perProb * useDNA;
-        double rand = Math.random();
 
-        result = (rand < prob);
+        TypedArray arrPerProb = mContext.getResources().obtainTypedArray(R.array.array_evol_prob);
+        double perProb = (double) arrPerProb.getFloat(tier, 0F);
+        double prob = perProb * useDNA;
+        double rand = Math.random();
+        final boolean result = (rand <= prob);
+
+        setUseDNA();
 
         if (result) {
             Common.setPrefData(mContext, Common.MAIN_TIER, String.valueOf(tier + 1));

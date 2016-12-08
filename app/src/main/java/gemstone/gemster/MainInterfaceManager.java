@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.AnimationDrawable;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -132,15 +131,12 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
             @Override
             public boolean onTouch(View view, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    Log.d("gemtest", "action down");
                     startClickScaleAnimation(view);
                     processActionDown(view);
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    Log.d("gemtest", "action up");
                     endClickScaleAnimation(view);
                     processActionUp(view);
                 } else if (event.getAction() == MotionEvent.ACTION_CANCEL) {
-                    Log.d("gemtest", "action cancel");
                     endClickScaleAnimation(view);
                     processActionCancel(view);
                 }
@@ -217,6 +213,11 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
     private void setImageViewMonsterImage() {
         int tier = (int) Common.getPrefData(mContext, Common.MAIN_TIER);
         TypedArray arrImg = mContext.getResources().obtainTypedArray(R.array.array_evol_image);
+
+        if (tier >= arrImg.length()) {
+            return;
+        }
+
         int id = arrImg.getResourceId(tier, 0);
         mImageButtonMonster.setImageResource(id);
     }
