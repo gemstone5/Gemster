@@ -1,4 +1,4 @@
-package core;
+package core.monstermain;
 
 import android.app.Activity;
 import android.content.Context;
@@ -7,18 +7,21 @@ import android.os.Handler;
 
 import java.util.Timer;
 
+import core.Common;
+import core.RepeatTimerTask;
+import core.RepeatUpdater;
 import core.gemster.R;
-import ui.MainInterfaceManager;
+import ui.monstermain.MonsterMainInterfaceManager;
 
 /**
  * Created by WONSEOK OH on 2016-12-04.
  */
 
-public class MainCoreManager implements MainInterfaceManager.EventListener, RepeatTimerTask.EventListener, RepeatUpdater.RepeatUpdaterEventListener {
+public class MonsterMainCoreManager implements MonsterMainInterfaceManager.EventListener, RepeatTimerTask.EventListener, RepeatUpdater.RepeatUpdaterEventListener {
 
     private Context mContext;
 
-    private MainInterfaceManager mInterfaceManager;
+    private MonsterMainInterfaceManager mInterfaceManager;
 
     private Timer mTimerDNA;
     private RepeatTimerTask mTimerTaskDNA;
@@ -27,7 +30,21 @@ public class MainCoreManager implements MainInterfaceManager.EventListener, Repe
 
     Handler mHandler = new Handler();
 
-    public MainCoreManager(Context context, Activity activity) {
+    public enum EventMode {
+        EVENT_OPEN_MONSTER_BOOK
+    }
+
+    private EventListener mListener;
+
+    public interface EventListener {
+        void onMainFragmentEvent(EventMode mode);
+    }
+
+    public void setEventListener(EventListener listener) {
+        mListener = listener;
+    }
+
+    public MonsterMainCoreManager(Context context, Activity activity) {
         mContext = context;
 
         // Handle exceptional tier case
@@ -37,7 +54,7 @@ public class MainCoreManager implements MainInterfaceManager.EventListener, Repe
         initRepeatUpdater();
 
         // Init interface manager
-        mInterfaceManager = new MainInterfaceManager(context, activity);
+        mInterfaceManager = new MonsterMainInterfaceManager(context, activity);
         mInterfaceManager.setEventListener(this);
         mInterfaceManager.init();
     }
@@ -51,6 +68,10 @@ public class MainCoreManager implements MainInterfaceManager.EventListener, Repe
     private void initRepeatUpdater() {
         mRepeatUpdater = new RepeatUpdater();
         mRepeatUpdater.setEventListener(this);
+    }
+
+    public void setTouchable(boolean state) {
+        mInterfaceManager.setTouchable(state);
     }
 
     public void processRepeatTimer(int type) {
@@ -84,8 +105,8 @@ public class MainCoreManager implements MainInterfaceManager.EventListener, Repe
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                mInterfaceManager.call(MainInterfaceManager.CallMode.UTIL_BUTTONS_ENABLE);
-                mInterfaceManager.call(MainInterfaceManager.CallMode.DNA_COUNT_SET);
+                mInterfaceManager.call(MonsterMainInterfaceManager.CallMode.UTIL_BUTTONS_ENABLE);
+                mInterfaceManager.call(MonsterMainInterfaceManager.CallMode.DNA_COUNT_SET);
                 setDebugDescription(Common.DEBUG_DEFAULT);
             }
         });
@@ -93,7 +114,7 @@ public class MainCoreManager implements MainInterfaceManager.EventListener, Repe
 
     private void tryEvolution() {
         if (Common.isExceptionalTier(mContext)) {
-            mInterfaceManager.call(MainInterfaceManager.CallMode.UTIL_BUTTONS_ENABLE);
+            mInterfaceManager.call(MonsterMainInterfaceManager.CallMode.UTIL_BUTTONS_ENABLE);
             return;
         }
 
@@ -101,13 +122,13 @@ public class MainCoreManager implements MainInterfaceManager.EventListener, Repe
         int useDNA = (int) Common.getPrefData(mContext, Common.MAIN_DNA_USE);
 
         if (DNA < 1) {
-            mInterfaceManager.call(MainInterfaceManager.CallMode.UTIL_BUTTONS_ENABLE);
+            mInterfaceManager.call(MonsterMainInterfaceManager.CallMode.UTIL_BUTTONS_ENABLE);
             return;
         }
 
         DNA -= useDNA;
         Common.setPrefData(mContext, Common.MAIN_DNA, String.valueOf(DNA));
-        mInterfaceManager.call(MainInterfaceManager.CallMode.DNA_COUNT_SET);
+        mInterfaceManager.call(MonsterMainInterfaceManager.CallMode.DNA_COUNT_SET);
 
         mTimeRemain = (int) (Common.EVOLUTION_TIME / Common.TIME_DELAY);
         processRepeatTimer(RepeatTimerTask.TYPE_TRY_EVOLUTION);
@@ -144,11 +165,11 @@ public class MainCoreManager implements MainInterfaceManager.EventListener, Repe
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                mInterfaceManager.call(MainInterfaceManager.CallMode.GAME_VIEW_SET);
+                mInterfaceManager.call(MonsterMainInterfaceManager.CallMode.GAME_VIEW_SET);
                 if (result) {
-                    mInterfaceManager.call(MainInterfaceManager.CallMode.MONSTER_EFFECT_EVOLUTION_SUCCESS_START);
+                    mInterfaceManager.call(MonsterMainInterfaceManager.CallMode.MONSTER_EFFECT_EVOLUTION_SUCCESS_START);
                 } else {
-                    mInterfaceManager.call(MainInterfaceManager.CallMode.MONSTER_EFFECT_EVOLUTION_FAILED_START);
+                    mInterfaceManager.call(MonsterMainInterfaceManager.CallMode.MONSTER_EFFECT_EVOLUTION_FAILED_START);
                 }
                 setDebugDescription(Common.DEBUG_DEFAULT);
             }
@@ -179,8 +200,8 @@ public class MainCoreManager implements MainInterfaceManager.EventListener, Repe
             }
         }
         Common.setPrefData(mContext, Common.MAIN_DNA_USE, String.valueOf(useDNA));
-        mInterfaceManager.call(MainInterfaceManager.CallMode.DNA_USE_SET);
-        mInterfaceManager.call(MainInterfaceManager.CallMode.MONSTER_PROB_SET);
+        mInterfaceManager.call(MonsterMainInterfaceManager.CallMode.DNA_USE_SET);
+        mInterfaceManager.call(MonsterMainInterfaceManager.CallMode.MONSTER_PROB_SET);
     }
 
     private void decrementDNAUSE() {
@@ -192,31 +213,37 @@ public class MainCoreManager implements MainInterfaceManager.EventListener, Repe
             }
         }
         Common.setPrefData(mContext, Common.MAIN_DNA_USE, String.valueOf(useDNA));
-        mInterfaceManager.call(MainInterfaceManager.CallMode.DNA_USE_SET);
-        mInterfaceManager.call(MainInterfaceManager.CallMode.MONSTER_PROB_SET);
+        mInterfaceManager.call(MonsterMainInterfaceManager.CallMode.DNA_USE_SET);
+        mInterfaceManager.call(MonsterMainInterfaceManager.CallMode.MONSTER_PROB_SET);
+    }
+
+    private void openMonsterBook() {
+        mListener.onMainFragmentEvent(EventMode.EVENT_OPEN_MONSTER_BOOK);
     }
 
     @Override
-    public void onMainInterfaceEvent(MainInterfaceManager.EventMode mode, Object param) {
-        if (MainInterfaceManager.EventMode.EVENT_SHOW_TOAST.equals(mode)) {
+    public void onMainInterfaceEvent(MonsterMainInterfaceManager.EventMode mode, Object param) {
+        if (MonsterMainInterfaceManager.EventMode.EVENT_SHOW_TOAST.equals(mode)) {
             mInterfaceManager.showToast((String) param);
-        } else if (MainInterfaceManager.EventMode.EVENT_GET_DNA.equals(mode)) {
+        } else if (MonsterMainInterfaceManager.EventMode.EVENT_OPEN_MONSTER_BOOK.equals(mode)) {
+            openMonsterBook();
+        } else if (MonsterMainInterfaceManager.EventMode.EVENT_GET_DNA.equals(mode)) {
             getDNA();
-        } else if (MainInterfaceManager.EventMode.EVENT_TRY_EVOLUTION.equals(mode)) {
+        } else if (MonsterMainInterfaceManager.EventMode.EVENT_TRY_EVOLUTION.equals(mode)) {
             tryEvolution();
-        } else if (MainInterfaceManager.EventMode.EVENT_TOUCH_DNA_UP_START.equals(mode)) {
+        } else if (MonsterMainInterfaceManager.EventMode.EVENT_TOUCH_DNA_UP_START.equals(mode)) {
             incrementDNAUse();
-        } else if (MainInterfaceManager.EventMode.EVENT_TOUCH_DNA_DOWN_START.equals(mode)) {
+        } else if (MonsterMainInterfaceManager.EventMode.EVENT_TOUCH_DNA_DOWN_START.equals(mode)) {
             decrementDNAUSE();
-        } else if (MainInterfaceManager.EventMode.EVENT_LONG_CLICK_DNA_UP.equals(mode)) {
+        } else if (MonsterMainInterfaceManager.EventMode.EVENT_LONG_CLICK_DNA_UP.equals(mode)) {
             mRepeatUpdater.setMode(RepeatUpdater.MODE_AUTO_INCREMENT);
             mRepeatUpdater.run();
-        } else if (MainInterfaceManager.EventMode.EVENT_LONG_CLICK_DNA_DOWN.equals(mode)) {
+        } else if (MonsterMainInterfaceManager.EventMode.EVENT_LONG_CLICK_DNA_DOWN.equals(mode)) {
             mRepeatUpdater.setMode(RepeatUpdater.MODE_AUTO_DECREMENT);
             mRepeatUpdater.run();
-        } else if (MainInterfaceManager.EventMode.EVENT_TOUCH_DNA_UP_OR_DOWN_STOP.equals(mode)) {
+        } else if (MonsterMainInterfaceManager.EventMode.EVENT_TOUCH_DNA_UP_OR_DOWN_STOP.equals(mode)) {
             mRepeatUpdater.stop();
-        } else if (MainInterfaceManager.EventMode.EVENT_RESET_FOR_DEBUG.equals(mode)) {
+        } else if (MonsterMainInterfaceManager.EventMode.EVENT_RESET_FOR_DEBUG.equals(mode)) {
             resetForDebug();
         }
     }
@@ -234,7 +261,7 @@ public class MainCoreManager implements MainInterfaceManager.EventListener, Repe
         Common.setPrefData(mContext, Common.MAIN_TIER, Common.getDefaultValue(Common.MAIN_TIER));
         Common.setPrefData(mContext, Common.MAIN_DNA, Common.getDefaultValue(Common.MAIN_DNA));
         Common.setPrefData(mContext, Common.MAIN_DNA_USE, Common.getDefaultValue(Common.MAIN_DNA_USE));
-        mInterfaceManager.call(MainInterfaceManager.CallMode.GAME_VIEW_SET);
+        mInterfaceManager.call(MonsterMainInterfaceManager.CallMode.GAME_VIEW_SET);
     }
 
     private void setDebugDescription(int mode) {
@@ -251,7 +278,7 @@ public class MainCoreManager implements MainInterfaceManager.EventListener, Repe
                 break;
         }
 
-        mInterfaceManager.call(MainInterfaceManager.CallMode.DEBUG_INFO_SET, desc);
+        mInterfaceManager.call(MonsterMainInterfaceManager.CallMode.DEBUG_INFO_SET, desc);
 
     }
 }

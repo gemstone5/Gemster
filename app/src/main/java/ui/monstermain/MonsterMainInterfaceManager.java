@@ -1,8 +1,7 @@
-package ui;
+package ui.monstermain;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.TypedArray;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -21,15 +20,17 @@ import java.text.DecimalFormat;
 
 import core.Common;
 import core.gemster.R;
+import ui.EffectManager;
 
 /**
  * Created by WONSEOK OH on 2016-12-04.
  */
 
-public class MainInterfaceManager implements EffectManager.EffectCompleteListener {
+public class MonsterMainInterfaceManager implements EffectManager.EffectCompleteListener {
 
     private final Context mContext;
     private final Activity mActivity;
+    private boolean mIsTouchable;
 
     private TextView mTextViewDebug;
     private TextView mTextViewDNACount;
@@ -53,6 +54,7 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
     EffectManager mEffectManager;
 
     public enum EventMode {
+        EVENT_OPEN_MONSTER_BOOK,
         EVENT_LONG_CLICK_DNA_UP, EVENT_LONG_CLICK_DNA_DOWN,
         EVENT_TOUCH_DNA_UP_START, EVENT_TOUCH_DNA_DOWN_START, EVENT_TOUCH_DNA_UP_OR_DOWN_STOP,
         EVENT_SHOW_TOAST, EVENT_GET_DNA, EVENT_TRY_EVOLUTION,
@@ -76,9 +78,10 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
         GAME_VIEW_SET, DEBUG_INFO_SET
     }
 
-    public MainInterfaceManager(Context context, Activity activity) {
+    public MonsterMainInterfaceManager(Context context, Activity activity) {
         mContext = context;
         mActivity = activity;
+        mIsTouchable = true;
 
         mEffectManager = new EffectManager(mContext);
         mEffectManager.setListener(this);
@@ -107,6 +110,10 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
                 return false;
             }
         };
+    }
+
+    public void setTouchable(boolean state) {
+        mIsTouchable = state;
     }
 
     private void processActionDown(View view) {
@@ -144,7 +151,12 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
         mOnTouchListener = new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent event) {
-                Log.d("gemtest", "onTouch view : " + view.getTag());
+
+                if (!mIsTouchable) {
+                    Log.d("MonsterMain", "MonsterMain is not touchable");
+                    return false;
+                }
+
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     startClickScaleAnimation(view);
                     processActionDown(view);
@@ -158,13 +170,13 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
                     endClickScaleAnimation(view);
                     processActionCancel(view);
                 }
-                return false;
+                return true;
             }
         };
     }
 
     private void openMonsterBook() {
-        mContext.startActivity(new Intent(mContext, MonsterBookActivity.class));
+        mListener.onMainInterfaceEvent(EventMode.EVENT_OPEN_MONSTER_BOOK, null);
     }
 
     private void getDNA() {

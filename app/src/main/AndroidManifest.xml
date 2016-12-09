@@ -17,7 +17,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="ui.MonsterBookActivity"></activity>
+        <activity android:name="ui.monsterbook.MonsterBookFragment"></activity>
 
     </application>
 
