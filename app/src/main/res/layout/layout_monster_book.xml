@@ -26,9 +26,20 @@
 
     </RelativeLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="monster_book_activity" />
+    <GridView
+        android:id="@+id/mb_gridView_collection"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:gravity="center"
+        android:horizontalSpacing="10dp"
+        android:numColumns="4"
+        android:paddingBottom="60dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="10dp"
+        android:scrollbars="none"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="10dp"></GridView>
 
 </LinearLayout>

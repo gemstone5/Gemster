@@ -3,6 +3,8 @@ package core;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.util.ArrayList;
+
 import core.gemster.R;
 
 /**
@@ -88,6 +90,19 @@ public class Common {
         name += spec + "_" + tier;
         int id = context.getResources().getIdentifier(name, "drawable", context.getPackageName());
         return id;
+    }
+
+    public static ArrayList<Integer> getGemDrawableIdList(Context context) {
+        ArrayList<Integer> mListId = new ArrayList<>();
+        int[] arrMaxTier = context.getResources().getIntArray(R.array.array_max_tier_of_spec);
+        for (int idxSpec = 0; idxSpec < arrMaxTier.length; idxSpec++) {
+            int maxTier = arrMaxTier[idxSpec];
+            for (int idxTier = 0; idxTier < maxTier; idxTier++) {
+                Integer id = getGemDrawableId(context, idxSpec, idxTier);
+                mListId.add(id);
+            }
+        }
+        return mListId;
     }
 
 }

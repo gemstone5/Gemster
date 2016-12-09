@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridView;
 import android.widget.ImageButton;
 
 import core.CustomOnTouchListener;
@@ -22,9 +23,12 @@ public class MonsterBookFragment extends Fragment implements EffectManager.Effec
 
     private Context mContext;
 
-    private ImageButton mImageButtonBack;
-    private CustomOnTouchListener mOnTouchListener;
     private EffectManager mEffectManager;
+
+    private ImageButton mImageButtonBack;
+    private GridView mGridViewCollection;
+
+    private CustomOnTouchListener mOnTouchListener;
 
     public static MonsterBookFragment newInstance() {
         MonsterBookFragment fragment = new MonsterBookFragment();
@@ -58,6 +62,9 @@ public class MonsterBookFragment extends Fragment implements EffectManager.Effec
 
     private void initView() {
         mImageButtonBack = (ImageButton) getView().findViewById(R.id.mb_imageButton_back);
+        mGridViewCollection = (GridView) getView().findViewById(R.id.mb_gridView_collection);
+
+        mGridViewCollection.setAdapter(new MonsterBookImageAdapter(mContext));
     }
 
     private void initListener() {
