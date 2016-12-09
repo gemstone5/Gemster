@@ -19,6 +19,7 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
 import core.Common;
+import core.CustomOnTouchListener;
 import core.gemster.R;
 import ui.EffectManager;
 
@@ -49,7 +50,7 @@ public class MonsterMainInterfaceManager implements EffectManager.EffectComplete
     private Button mButtonResetForDebug;
 
     private View.OnLongClickListener mOnLongClickListener;
-    private View.OnTouchListener mOnTouchListener;
+    private CustomOnTouchListener mOnTouchListener;
 
     EffectManager mEffectManager;
 
@@ -140,15 +141,8 @@ public class MonsterMainInterfaceManager implements EffectManager.EffectComplete
         }
     }
 
-    private void processActionCancel(View view) {
-        if (view == null) return;
-        if (view.equals(mImageButtonDnaUp) || view.equals(mImageButtonDnaDown)) {
-            mListener.onMainInterfaceEvent(EventMode.EVENT_TOUCH_DNA_UP_OR_DOWN_STOP, null);
-        }
-    }
-
     private void initOnTouchListener() {
-        mOnTouchListener = new View.OnTouchListener() {
+        mOnTouchListener = new CustomOnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent event) {
                 if (!mIsTouchable) {
@@ -156,17 +150,24 @@ public class MonsterMainInterfaceManager implements EffectManager.EffectComplete
                     return false;
                 }
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    setRectAndIgnore(view);
                     startClickScaleAnimation(view);
                     processActionDown(view);
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                    if (this.getIgnore()) return false;
                     if (view.equals(mImageButtonMonster)) {
                         mEffectManager.disableBreathAnimation();
                     }
                     endClickScaleAnimation(view);
                     processActionUp(view);
-                } else if (event.getAction() == MotionEvent.ACTION_CANCEL) {
+                } else if (event.getAction() == MotionEvent.ACTION_MOVE && this.isOutOfBounds(view, event)) {
+                    if (this.getIgnore()) return false;
+                    if (view.equals(mImageButtonMonster)) {
+                        mEffectManager.disableBreathAnimation();
+                    }
                     endClickScaleAnimation(view);
-                    processActionCancel(view);
+                    processActionUp(view);
+                    this.setIgnore(true);
                 }
                 return false;
             }
