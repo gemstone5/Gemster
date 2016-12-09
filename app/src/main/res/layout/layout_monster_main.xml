@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/bitmap_lined_background">
 
     <RelativeLayout
         android:id="@+id/layout_status"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="70dp"
         android:layout_alignParentTop="true"
-        android:background="@color/color_959595">
+        android:layout_marginBottom="10dp">
 
         <ImageView
             android:id="@+id/imageView_DNA"
@@ -16,7 +17,7 @@
             android:layout_height="40dp"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="30dp"
+            android:layout_marginLeft="10dp"
             android:scaleType="fitCenter"
             android:src="@mipmap/ic_launcher" />
 
@@ -36,9 +37,9 @@
             android:layout_height="55dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="30dp"
+            android:layout_marginRight="5dp"
             android:background="@android:color/transparent"
-            android:padding="5dp"
+            android:padding="2dp"
             android:scaleType="fitCenter"
             android:src="@drawable/setting_icon" />
 
@@ -49,7 +50,7 @@
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@id/imageButton_setting"
             android:background="@android:color/transparent"
-            android:padding="5dp"
+            android:padding="2dp"
             android:scaleType="fitCenter"
             android:src="@drawable/monster_book_icon" />
 
@@ -84,7 +85,7 @@
         android:id="@+id/layout_desc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/imageButton_monster"
+        android:layout_below="@id/imageView_monster_frame"
         android:gravity="center_horizontal"
         android:orientation="vertical"
         android:paddingBottom="15dp"
@@ -168,11 +169,20 @@
 
     </LinearLayout>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/color_red_60"
+        android:gravity="center"
+        android:text="BANNER"
+        android:textSize="20dp" />
+
     <Button
         android:id="@+id/button_resetForDebug"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="70dp"
         android:text="Reset for debug" />
 
     <TextView

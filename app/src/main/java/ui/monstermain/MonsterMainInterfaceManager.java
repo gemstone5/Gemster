@@ -7,7 +7,6 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -214,25 +213,28 @@ public class MonsterMainInterfaceManager implements EffectManager.EffectComplete
         DisplayMetrics displayMetrics = mContext.getResources().getDisplayMetrics();
         int size = displayMetrics.widthPixels;
 
+        int marginFrame = mContext.getResources().getDimensionPixelSize(R.dimen.imageView_monster_frame_margin_size);
+        int halfOfMarginFrame = marginFrame / 2;
+
+        int marginImage = marginFrame + mContext.getResources().getDimensionPixelSize(R.dimen.imageView_monster_image_margin_size);
+        int halfOfMarginImage = marginImage / 2;
+
         // Set monster effect layout
-        ViewGroup.LayoutParams paramEffect = mImageViewMonsterEffect.getLayoutParams();
+        RelativeLayout.LayoutParams paramEffect = (RelativeLayout.LayoutParams) mImageViewMonsterEffect.getLayoutParams();
         paramEffect.width = paramEffect.height = size;
+        paramEffect.setMargins(0, halfOfMarginFrame * -1, 0, 0);
         mImageViewMonsterEffect.setLayoutParams(paramEffect);
 
         // Set monster frame layout
-        int marginFrame = mContext.getResources().getDimensionPixelSize(R.dimen.imageView_monster_frame_margin_size);
         RelativeLayout.LayoutParams paramFrame = (RelativeLayout.LayoutParams) mImageViewMonsterFrame.getLayoutParams();
         paramFrame.width = paramFrame.height = size - marginFrame;
-        int halfOfMarginFrame = marginFrame / 2;
-        paramFrame.setMargins(halfOfMarginFrame, halfOfMarginFrame, 0, 0);
+        paramFrame.setMargins(halfOfMarginFrame, 0, 0, 0);
         mImageViewMonsterFrame.setLayoutParams(paramFrame);
 
         // Set monster layout
-        int marginImage = marginFrame + mContext.getResources().getDimensionPixelSize(R.dimen.imageView_monster_image_margin_size);
         RelativeLayout.LayoutParams paramImage = (RelativeLayout.LayoutParams) mImageButtonMonster.getLayoutParams();
         paramImage.width = paramImage.height = size - marginImage;
-        int halfOfMarginImage = marginImage / 2;
-        paramImage.setMargins(halfOfMarginImage, halfOfMarginImage, 0, 0);
+        paramImage.setMargins(halfOfMarginImage, halfOfMarginImage - halfOfMarginFrame, 0, 0);
         mImageButtonMonster.setLayoutParams(paramImage);
     }
 
