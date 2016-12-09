@@ -1,7 +1,6 @@
-package gemstone.gemster;
+package core;
 
 import android.os.Handler;
-import android.util.Log;
 
 /**
  * Created by WONSEOK OH on 2016-12-07.

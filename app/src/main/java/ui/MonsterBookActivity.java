@@ -1,7 +1,9 @@
-package gemstone.gemster;
+package ui;
 
 import android.app.Activity;
 import android.os.Bundle;
+
+import core.gemster.R;
 
 /**
  * Created by WONSEOK OH on 2016-12-08.

@@ -2,27 +2,11 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <include layout="@layout/layout_main_game" />
-
-    <Button
-        android:id="@+id/button_resetForDebug"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
-        android:onClick="resetForDebug"
-        android:text="Reset for debug" />
-
-    <TextView
-        android:id="@+id/textView_debug"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/button_resetForDebug"
-        android:background="@color/color_000000"
-        android:padding="3dp"
-        android:text="debug_information"
-        android:textColor="@color/color_FF0000" />
+    <fragment
+        android:name="ui.MainFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </RelativeLayout>

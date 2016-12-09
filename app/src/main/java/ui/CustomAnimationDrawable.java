@@ -1,4 +1,4 @@
-package gemstone.gemster;
+package ui;
 
 import android.graphics.drawable.AnimationDrawable;
 import android.widget.ImageView;

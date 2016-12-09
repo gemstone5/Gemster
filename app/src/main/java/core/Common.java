@@ -1,7 +1,9 @@
-package gemstone.gemster;
+package core;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+
+import core.gemster.R;
 
 /**
  * Created by WONSEOK OH on 2016-12-04.

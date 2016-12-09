@@ -1,4 +1,4 @@
-package gemstone.gemster;
+package ui;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -17,6 +18,9 @@ import android.widget.Toast;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+
+import core.Common;
+import core.gemster.R;
 
 /**
  * Created by WONSEOK OH on 2016-12-04.
@@ -41,6 +45,7 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
     private TextView mTextViewDNAUse;
     private ImageButton mImageButtonDnaUp;
     private ImageButton mImageButtonDnaDown;
+    private Button mButtonResetForDebug;
 
     private View.OnLongClickListener mOnLongClickListener;
     private View.OnTouchListener mOnTouchListener;
@@ -50,7 +55,8 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
     public enum EventMode {
         EVENT_LONG_CLICK_DNA_UP, EVENT_LONG_CLICK_DNA_DOWN,
         EVENT_TOUCH_DNA_UP_START, EVENT_TOUCH_DNA_DOWN_START, EVENT_TOUCH_DNA_UP_OR_DOWN_STOP,
-        EVENT_SHOW_TOAST, EVENT_GET_DNA, EVENT_TRY_EVOLUTION
+        EVENT_SHOW_TOAST, EVENT_GET_DNA, EVENT_TRY_EVOLUTION,
+        EVENT_RESET_FOR_DEBUG
     }
 
     private EventListener mListener;
@@ -122,6 +128,8 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
             tryEvolution();
         } else if (view.equals(mImageButtonDnaUp) || view.equals(mImageButtonDnaDown)) {
             mListener.onMainInterfaceEvent(EventMode.EVENT_TOUCH_DNA_UP_OR_DOWN_STOP, null);
+        } else if (view.equals(mButtonResetForDebug)) {
+            resetForDebug();
         }
     }
 
@@ -138,12 +146,12 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
             public boolean onTouch(View view, MotionEvent event) {
                 Log.d("gemtest", "onTouch view : " + view.getTag());
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    if (view.equals(mImageButtonMonster)) {
-                        mEffectManager.disableBreathAnimation();
-                    }
                     startClickScaleAnimation(view);
                     processActionDown(view);
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                    if (view.equals(mImageButtonMonster)) {
+                        mEffectManager.disableBreathAnimation();
+                    }
                     endClickScaleAnimation(view);
                     processActionUp(view);
                 } else if (event.getAction() == MotionEvent.ACTION_CANCEL) {
@@ -184,6 +192,7 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
         mTextViewDNAUse = (TextView) mActivity.findViewById(R.id.textView_DNA_use);
         mImageButtonDnaUp = (ImageButton) mActivity.findViewById(R.id.imageButton_DNA_up);
         mImageButtonDnaDown = (ImageButton) mActivity.findViewById(R.id.imageButton_DNA_down);
+        mButtonResetForDebug = (Button) mActivity.findViewById(R.id.button_resetForDebug);
 
         setImageViewMonsterLayoutCollection();
 
@@ -295,6 +304,7 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
         mImageButtonMonster.setOnTouchListener(mOnTouchListener);
         mImageButtonDNA.setOnTouchListener(mOnTouchListener);
         mImageButtonEvolution.setOnTouchListener(mOnTouchListener);
+        mButtonResetForDebug.setOnTouchListener(mOnTouchListener);
 
         mImageButtonDnaUp.setOnLongClickListener(mOnLongClickListener);
         mImageButtonDnaUp.setOnTouchListener(mOnTouchListener);
@@ -361,5 +371,9 @@ public class MainInterfaceManager implements EffectManager.EffectCompleteListene
 
     public void showToast(String text) {
         Toast.makeText(mContext, text, Toast.LENGTH_SHORT).show();
+    }
+
+    public void resetForDebug() {
+        mListener.onMainInterfaceEvent(EventMode.EVENT_RESET_FOR_DEBUG, null);
     }
 }

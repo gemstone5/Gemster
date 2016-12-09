@@ -1,4 +1,4 @@
-package gemstone.gemster;
+package ui;
 
 import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
@@ -13,6 +13,8 @@ import android.widget.ImageView;
 
 import java.util.Timer;
 import java.util.TimerTask;
+
+import core.gemster.R;
 
 /**
  * Created by WONSEOK OH on 2016-12-04.

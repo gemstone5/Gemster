@@ -1,4 +1,4 @@
-package gemstone.gemster;
+package core;
 
 import android.app.Activity;
 import android.content.Context;
@@ -6,6 +6,9 @@ import android.content.res.TypedArray;
 import android.os.Handler;
 
 import java.util.Timer;
+
+import core.gemster.R;
+import ui.MainInterfaceManager;
 
 /**
  * Created by WONSEOK OH on 2016-12-04.
@@ -23,10 +26,6 @@ public class MainCoreManager implements MainInterfaceManager.EventListener, Repe
     private RepeatUpdater mRepeatUpdater;
 
     Handler mHandler = new Handler();
-
-    public enum CallMode {
-        RESET_FOR_DEBUG
-    }
 
     public MainCoreManager(Context context, Activity activity) {
         mContext = context;
@@ -217,6 +216,8 @@ public class MainCoreManager implements MainInterfaceManager.EventListener, Repe
             mRepeatUpdater.run();
         } else if (MainInterfaceManager.EventMode.EVENT_TOUCH_DNA_UP_OR_DOWN_STOP.equals(mode)) {
             mRepeatUpdater.stop();
+        } else if (MainInterfaceManager.EventMode.EVENT_RESET_FOR_DEBUG.equals(mode)) {
+            resetForDebug();
         }
     }
 
@@ -229,15 +230,11 @@ public class MainCoreManager implements MainInterfaceManager.EventListener, Repe
         }
     }
 
-    public void call(CallMode mode) {
-        switch (mode) {
-            case RESET_FOR_DEBUG:
-                Common.setPrefData(mContext, Common.MAIN_TIER, Common.getDefaultValue(Common.MAIN_TIER));
-                Common.setPrefData(mContext, Common.MAIN_DNA, Common.getDefaultValue(Common.MAIN_DNA));
-                Common.setPrefData(mContext, Common.MAIN_DNA_USE, Common.getDefaultValue(Common.MAIN_DNA_USE));
-                mInterfaceManager.call(MainInterfaceManager.CallMode.GAME_VIEW_SET);
-                break;
-        }
+    public void resetForDebug() {
+        Common.setPrefData(mContext, Common.MAIN_TIER, Common.getDefaultValue(Common.MAIN_TIER));
+        Common.setPrefData(mContext, Common.MAIN_DNA, Common.getDefaultValue(Common.MAIN_DNA));
+        Common.setPrefData(mContext, Common.MAIN_DNA_USE, Common.getDefaultValue(Common.MAIN_DNA_USE));
+        mInterfaceManager.call(MainInterfaceManager.CallMode.GAME_VIEW_SET);
     }
 
     private void setDebugDescription(int mode) {

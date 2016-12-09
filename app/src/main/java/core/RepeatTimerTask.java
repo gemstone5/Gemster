@@ -1,4 +1,4 @@
-package gemstone.gemster;
+package core;
 
 import java.util.TimerTask;
 

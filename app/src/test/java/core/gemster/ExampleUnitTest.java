@@ -1,4 +1,4 @@
-package gemstone.gemster;
+package core.gemster;
 
 import org.junit.Test;
 
