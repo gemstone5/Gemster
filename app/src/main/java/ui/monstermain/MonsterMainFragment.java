@@ -24,7 +24,7 @@ public class MonsterMainFragment extends Fragment implements MonsterMainCoreMana
     private MonsterMainCoreManager mMonsterMainCoreManager;
 
     public enum EventMode {
-        EVENT_OPEN_MONSTER_BOOK
+        EVENT_OPEN_MONSTER_BOOK, EVENT_EVOLUTION_SUCCESS
     }
 
     private EventListener mListener;
@@ -66,10 +66,16 @@ public class MonsterMainFragment extends Fragment implements MonsterMainCoreMana
         mListener.onMainFragmentEvent(EventMode.EVENT_OPEN_MONSTER_BOOK);
     }
 
+    private void updateMonsterBook() {
+        mListener.onMainFragmentEvent(EventMode.EVENT_EVOLUTION_SUCCESS);
+    }
+
     @Override
     public void onMainFragmentEvent(MonsterMainCoreManager.EventMode mode) {
         if (MonsterMainCoreManager.EventMode.EVENT_OPEN_MONSTER_BOOK.equals(mode)) {
             openMonsterBook();
+        } else if (MonsterMainCoreManager.EventMode.EVENT_EVOLUTION_SUCCESS.equals(mode)) {
+            updateMonsterBook();
         }
     }
 }

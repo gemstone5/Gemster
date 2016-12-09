@@ -31,7 +31,7 @@ public class MonsterMainCoreManager implements MonsterMainInterfaceManager.Event
     Handler mHandler = new Handler();
 
     public enum EventMode {
-        EVENT_OPEN_MONSTER_BOOK
+        EVENT_OPEN_MONSTER_BOOK, EVENT_EVOLUTION_SUCCESS
     }
 
     private EventListener mListener;
@@ -158,6 +158,8 @@ public class MonsterMainCoreManager implements MonsterMainInterfaceManager.Event
 
         if (result) {
             Common.setPrefData(mContext, Common.MAIN_TIER, String.valueOf(tier + 1));
+            final int spec = (int) Common.getPrefData(mContext, Common.MAIN_SPEC);
+            Common.setIsCollected(mContext, spec, tier + 1);
         } else {
             Common.setPrefData(mContext, Common.MAIN_TIER, "0");
         }
@@ -172,6 +174,9 @@ public class MonsterMainCoreManager implements MonsterMainInterfaceManager.Event
                     mInterfaceManager.call(MonsterMainInterfaceManager.CallMode.MONSTER_EFFECT_EVOLUTION_FAILED_START);
                 }
                 setDebugDescription(Common.DEBUG_DEFAULT);
+                if (result) {
+                    mListener.onMainFragmentEvent(EventMode.EVENT_EVOLUTION_SUCCESS);
+                }
             }
         });
     }
@@ -261,6 +266,8 @@ public class MonsterMainCoreManager implements MonsterMainInterfaceManager.Event
         Common.setPrefData(mContext, Common.MAIN_TIER, Common.getDefaultValue(Common.MAIN_TIER));
         Common.setPrefData(mContext, Common.MAIN_DNA, Common.getDefaultValue(Common.MAIN_DNA));
         Common.setPrefData(mContext, Common.MAIN_DNA_USE, Common.getDefaultValue(Common.MAIN_DNA_USE));
+        Common.setPrefData(mContext, Common.MAIN_DATA_COLLECT, "");
+        Common.setIsCollected(mContext, 0, 0);
         mInterfaceManager.call(MonsterMainInterfaceManager.CallMode.GAME_VIEW_SET);
     }
 

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 import core.Common;
 import core.gemster.R;
+import core.monsterbook.MonsterBookItem;
 
 /**
  * Created by WONSEOK OH on 2016-12-10.
@@ -19,18 +20,18 @@ public class MonsterBookImageAdapter extends BaseAdapter {
 
     private Context mContext;
     private LayoutInflater mInflater;
-    private ArrayList<Integer> mGemDrawableIdList;
+    private ArrayList<MonsterBookItem> mMonsterBookItemList;
 
     public MonsterBookImageAdapter(Context context) {
         mContext = context;
         mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        mGemDrawableIdList = Common.getGemDrawableIdList(mContext);
+        mMonsterBookItemList = Common.getMonsterBookItemList(mContext);
     }
 
     @Override
     public int getCount() {
-        return mGemDrawableIdList.size();
+        return mMonsterBookItemList.size() * 20;
     }
 
     @Override
@@ -46,12 +47,18 @@ public class MonsterBookImageAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View view, ViewGroup parent) {
 
+        MonsterBookItem item = mMonsterBookItemList.get(position % 8);
+
         if (view == null) {
             view = mInflater.inflate(R.layout.layout_monster_book_item, parent, false);
         }
 
         MonsterBookCustomImageView imageViewThumbnail = (MonsterBookCustomImageView) view.findViewById(R.id.MBI_imageView_thumbnail);
-        imageViewThumbnail.setImageResource(mGemDrawableIdList.get(position));
+        if (!Common.isCollected(mContext, item.mMonsterKey)) {
+            imageViewThumbnail.setImageResource(R.drawable.question_icon);
+        } else {
+            imageViewThumbnail.setImageResource(mMonsterBookItemList.get(position % 8).mResourceId);
+        }
 
         return view;
     }

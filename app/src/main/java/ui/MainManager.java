@@ -20,14 +20,14 @@ public class MainManager implements MonsterMainFragment.EventListener {
     private MonsterMainFragment mMonsterMainFragment;
     private MonsterBookFragment mMonsterBookFragment;
 
-    private final String FRAGMENT_TAG_MONSTER_BOOK = "fragment_monster_book";
-
     public MainManager(Activity activity) {
         mActivity = activity;
 
         initFragmentManager();
         initMainFragment();
         initMonsterBookFragment();
+
+        init();
     }
 
     private void initFragmentManager() {
@@ -40,28 +40,40 @@ public class MainManager implements MonsterMainFragment.EventListener {
     }
 
     private void initMonsterBookFragment() {
-        mMonsterBookFragment = MonsterBookFragment.newInstance();
+        mMonsterBookFragment = (MonsterBookFragment) mFragmentManager.findFragmentById(R.id.fragment_monster_book);
+    }
+
+    private void init() {
+        FragmentTransaction ft = mFragmentManager.beginTransaction();
+        ft.hide(mMonsterBookFragment);
+        ft.commit();
     }
 
     protected void openMonsterBook() {
         mMonsterMainFragment.setTouchable(false);
         FragmentTransaction ft = mFragmentManager.beginTransaction();
         ft.setCustomAnimations(R.animator.anim_slide_in_left, R.animator.anim_slide_out_left);
-        ft.add(R.id.layout_main_monster_book, mMonsterBookFragment, FRAGMENT_TAG_MONSTER_BOOK);
+        ft.show(mMonsterBookFragment);
         ft.commit();
+    }
+
+    protected void updateMonsterBook() {
+        mMonsterBookFragment.updateMonsterBook();
     }
 
     @Override
     public void onMainFragmentEvent(MonsterMainFragment.EventMode mode) {
         if (MonsterMainFragment.EventMode.EVENT_OPEN_MONSTER_BOOK.equals(mode)) {
             openMonsterBook();
+        } else if (MonsterMainFragment.EventMode.EVENT_EVOLUTION_SUCCESS.equals(mode)) {
+            updateMonsterBook();
         }
     }
 
     private void removeMonsterBookFragment() {
         FragmentTransaction ft = mFragmentManager.beginTransaction();
         ft.setCustomAnimations(R.animator.anim_slide_in_left, R.animator.anim_slide_out_left);
-        ft.remove(mMonsterBookFragment).commit();
+        ft.hide(mMonsterBookFragment).commit();
         mMonsterMainFragment.setTouchable(true);
     }
 

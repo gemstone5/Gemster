@@ -27,13 +27,9 @@ public class MonsterBookFragment extends Fragment implements EffectManager.Effec
 
     private ImageButton mImageButtonBack;
     private GridView mGridViewCollection;
+    private MonsterBookImageAdapter mMonsterBookImageAdapter;
 
     private CustomOnTouchListener mOnTouchListener;
-
-    public static MonsterBookFragment newInstance() {
-        MonsterBookFragment fragment = new MonsterBookFragment();
-        return fragment;
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,6 +39,8 @@ public class MonsterBookFragment extends Fragment implements EffectManager.Effec
 
         mEffectManager = new EffectManager(mContext);
         mEffectManager.setListener(this);
+
+        mMonsterBookImageAdapter = new MonsterBookImageAdapter(mContext);
     }
 
     @Nullable
@@ -64,7 +62,7 @@ public class MonsterBookFragment extends Fragment implements EffectManager.Effec
         mImageButtonBack = (ImageButton) getView().findViewById(R.id.mb_imageButton_back);
         mGridViewCollection = (GridView) getView().findViewById(R.id.mb_gridView_collection);
 
-        mGridViewCollection.setAdapter(new MonsterBookImageAdapter(mContext));
+        mGridViewCollection.setAdapter(mMonsterBookImageAdapter);
     }
 
     private void initListener() {
@@ -87,6 +85,10 @@ public class MonsterBookFragment extends Fragment implements EffectManager.Effec
                 return false;
             }
         };
+    }
+
+    public void updateMonsterBook() {
+        mMonsterBookImageAdapter.notifyDataSetChanged();
     }
 
     private void setListener() {

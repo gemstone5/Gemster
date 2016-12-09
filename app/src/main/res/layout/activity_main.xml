@@ -10,8 +10,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <RelativeLayout
-        android:id="@+id/layout_main_monster_book"
+    <fragment
+        android:id="@+id/fragment_monster_book"
+        android:name="ui.monsterbook.MonsterBookFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
