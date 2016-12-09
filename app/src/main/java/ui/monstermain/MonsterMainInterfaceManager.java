@@ -151,12 +151,10 @@ public class MonsterMainInterfaceManager implements EffectManager.EffectComplete
         mOnTouchListener = new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent event) {
-
                 if (!mIsTouchable) {
                     Log.d("MonsterMain", "MonsterMain is not touchable");
                     return false;
                 }
-
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     startClickScaleAnimation(view);
                     processActionDown(view);
@@ -170,7 +168,7 @@ public class MonsterMainInterfaceManager implements EffectManager.EffectComplete
                     endClickScaleAnimation(view);
                     processActionCancel(view);
                 }
-                return true;
+                return false;
             }
         };
     }
