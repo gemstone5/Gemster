@@ -165,7 +165,6 @@ public class MonsterMainInterfaceManager implements EffectManager.EffectComplete
                         mEffectManager.disableBreathAnimation();
                     }
                     endClickScaleAnimation(view);
-                    processActionUp(view);
                     this.setIgnore(true);
                 }
                 return false;
