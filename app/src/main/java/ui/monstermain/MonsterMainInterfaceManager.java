@@ -2,7 +2,6 @@ package ui.monstermain;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -267,9 +266,10 @@ public class MonsterMainInterfaceManager implements EffectManager.EffectComplete
     private void setTextViewMonsterProb() {
         int tier = (int) Common.getPrefData(mContext, Common.MAIN_TIER);
         int useDNA = (int) Common.getPrefData(mContext, Common.MAIN_DNA_USE);
-        TypedArray arrPerProb = mContext.getResources().obtainTypedArray(R.array.array_evol_prob);
-        float perProb = arrPerProb.getFloat(tier, 0F);
-        float prob = perProb * useDNA;
+//        TypedArray arrPerProb = mContext.getResources().obtainTypedArray(R.array.array_evol_prob);
+//        float perProb = arrPerProb.getFloat(tier, 0F);
+        double perProb = 0.5f;
+        double prob = perProb * useDNA;
 
         if (prob > 1.0F) prob = 1.0F;
 

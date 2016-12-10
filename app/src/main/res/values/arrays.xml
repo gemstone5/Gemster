@@ -2,18 +2,26 @@
 <resources>
 
     <integer-array name="array_max_tier_of_spec">
-        <item>8</item>
+        <item>16</item>
     </integer-array>
 
     <string-array name="array_evol_name">
-        <item>"1티어 알"</item>
-        <item>"2티어 작은 공룡몬"</item>
-        <item>"3티어 꼬마 큰 공룡몬"</item>
-        <item>"4티어 공룡몬"</item>
-        <item>"5티어 큰 공룡몬"</item>
-        <item>"6티어 대따 큰 공룡몬"</item>
-        <item>"7티어 왕 큰 공룡몬"</item>
-        <item>"8티어 궁극의 공룡몬"</item>
+        <item>"1티어"</item>
+        <item>"2티어"</item>
+        <item>"3티어"</item>
+        <item>"4티어"</item>
+        <item>"5티어"</item>
+        <item>"6티어"</item>
+        <item>"7티어"</item>
+        <item>"8티어"</item>
+        <item>"9티어"</item>
+        <item>"10티어"</item>
+        <item>"11티어"</item>
+        <item>"12티어"</item>
+        <item>"13티어"</item>
+        <item>"14티어"</item>
+        <item>"15티어"</item>
+        <item>"16티어"</item>
     </string-array>
 
     <array name="array_evol_prob">

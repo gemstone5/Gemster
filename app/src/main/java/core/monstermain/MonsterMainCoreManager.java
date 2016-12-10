@@ -2,7 +2,6 @@ package core.monstermain;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.os.Handler;
 
 import java.util.Timer;
@@ -10,7 +9,6 @@ import java.util.Timer;
 import core.Common;
 import core.RepeatTimerTask;
 import core.RepeatUpdater;
-import core.gemster.R;
 import ui.monstermain.MonsterMainInterfaceManager;
 
 /**
@@ -148,8 +146,9 @@ public class MonsterMainCoreManager implements MonsterMainInterfaceManager.Event
         final int tier = (int) Common.getPrefData(mContext, Common.MAIN_TIER);
         final int useDNA = (int) Common.getPrefData(mContext, Common.MAIN_DNA_USE);
 
-        TypedArray arrPerProb = mContext.getResources().obtainTypedArray(R.array.array_evol_prob);
-        double perProb = (double) arrPerProb.getFloat(tier, 0F);
+//        TypedArray arrPerProb = mContext.getResources().obtainTypedArray(R.array.array_evol_prob);
+//        double perProb = (double) arrPerProb.getFloat(tier, 0F);
+        double perProb = 0.5f;
         double prob = perProb * useDNA;
         double rand = Math.random();
         final boolean result = (rand <= prob);

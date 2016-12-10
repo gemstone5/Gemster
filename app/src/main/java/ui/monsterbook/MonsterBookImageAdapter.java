@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 
 import core.Common;
@@ -47,7 +49,7 @@ public class MonsterBookImageAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View view, ViewGroup parent) {
 
-        MonsterBookItem item = mMonsterBookItemList.get(position % 8);
+        MonsterBookItem item = mMonsterBookItemList.get(position % mMonsterBookItemList.size());
 
         if (view == null) {
             view = mInflater.inflate(R.layout.layout_monster_book_item, parent, false);
@@ -55,9 +57,10 @@ public class MonsterBookImageAdapter extends BaseAdapter {
 
         MonsterBookCustomImageView imageViewThumbnail = (MonsterBookCustomImageView) view.findViewById(R.id.MBI_imageView_thumbnail);
         if (!Common.isCollected(mContext, item.mMonsterKey)) {
-            imageViewThumbnail.setImageResource(R.drawable.ic_mbi_question_mark);
+            Glide.with(mContext).load(R.drawable.ic_mbi_question_mark).into(imageViewThumbnail);
         } else {
-            imageViewThumbnail.setImageResource(mMonsterBookItemList.get(position % 8).mResourceId);
+            int resourceId = mMonsterBookItemList.get(position % mMonsterBookItemList.size()).mResourceId;
+            Glide.with(mContext).load(resourceId).into(imageViewThumbnail);
         }
 
         return view;
