@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import core.Common;
 import core.CustomOnTouchListener;
+import core.SoundManager;
 import core.gemster.R;
 import ui.EffectManager;
 
@@ -115,6 +116,7 @@ public class EditDNAUsePopupWindow extends PopupWindow implements CustomEditText
             @Override
             public boolean onTouch(View view, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    SoundManager.startSound(SoundManager.SoundEnum.CLICK);
                     setRectAndIgnore(view);
                     startClickScaleAnimation(view);
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {

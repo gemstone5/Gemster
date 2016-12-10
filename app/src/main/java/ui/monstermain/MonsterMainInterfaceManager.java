@@ -23,6 +23,7 @@ import java.text.DecimalFormat;
 
 import core.Common;
 import core.CustomOnTouchListener;
+import core.SoundManager;
 import core.gemster.R;
 import ui.EffectManager;
 
@@ -167,6 +168,7 @@ public class MonsterMainInterfaceManager implements EffectManager.EffectComplete
                     return false;
                 }
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    SoundManager.startSound(SoundManager.SoundEnum.CLICK);
                     setRectAndIgnore(view);
                     startClickScaleAnimation(view);
                     processActionDown(view);

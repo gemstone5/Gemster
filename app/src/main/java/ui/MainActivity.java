@@ -18,6 +18,18 @@ public class MainActivity extends Activity {
     }
 
     @Override
+    protected void onUserLeaveHint() {
+        mMainManager.onUserLeaveHint();
+        super.onUserLeaveHint();
+    }
+
+    @Override
+    protected void onResume() {
+        mMainManager.resume();
+        super.onResume();
+    }
+
+    @Override
     protected void onPause() {
         mMainManager.pause();
         super.onPause();

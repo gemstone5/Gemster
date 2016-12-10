@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 
+import core.SoundManager;
 import core.gemster.R;
 import ui.monsterbook.MonsterBookFragment;
 import ui.monstermain.MonsterMainFragment;
@@ -28,6 +29,7 @@ public class MainManager implements MonsterMainFragment.EventListener {
         initMonsterBookFragment();
 
         init();
+        SoundManager.init(mActivity);
     }
 
     private void initFragmentManager() {
@@ -81,7 +83,16 @@ public class MainManager implements MonsterMainFragment.EventListener {
         mMonsterMainFragment.dismissPopupWindow();
     }
 
+    public void onUserLeaveHint() {
+        SoundManager.pauseBGM();
+    }
+
+    public void resume() {
+        SoundManager.startBGM();
+    }
+
     public void pause() {
+        SoundManager.pauseBGM();
         dismissPopupWindow();
     }
 
@@ -90,6 +101,7 @@ public class MainManager implements MonsterMainFragment.EventListener {
             removeMonsterBookFragment();
             return true;
         }
+        SoundManager.stopBGM();
         return false;
     }
 }
