@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/edupw_linearLayout_main"
+        android:layout_width="300dp"
+        android:layout_height="200dp"
+        android:alpha="0.9"
+        android:background="@drawable/bg_edit_dna_popup"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.2"
+            android:gravity="center"
+            android:padding="20dp">
+
+            <ui.monstermain.CustomEditText
+                android:id="@+id/edupw_editText_DNA_use"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:inputType="number"
+                android:selectAllOnFocus="true"
+                android:shadowColor="@color/color_black_60"
+                android:shadowDx="0"
+                android:shadowDy="0"
+                android:shadowRadius="10"
+                android:textSize="30dp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.8"
+            android:gravity="center_horizontal">
+
+            <ImageButton
+                android:id="@+id/edpw_imageButton_positive"
+                android:layout_width="120dp"
+                android:layout_height="60dp"
+                android:background="@android:color/transparent"
+                android:padding="4dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_edit_dna_positive" />
+
+            <ImageButton
+                android:id="@+id/edpw_imageButton_negative"
+                android:layout_width="120dp"
+                android:layout_height="60dp"
+                android:background="@android:color/transparent"
+                android:padding="4dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_edit_dna_negative" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

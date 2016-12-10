@@ -70,6 +70,10 @@ public class MonsterMainFragment extends Fragment implements MonsterMainCoreMana
         mListener.onMainFragmentEvent(EventMode.EVENT_EVOLUTION_SUCCESS);
     }
 
+    public void dismissPopupWindow() {
+        mMonsterMainCoreManager.dismissPopupWindow();
+    }
+
     @Override
     public void onMainFragmentEvent(MonsterMainCoreManager.EventMode mode) {
         if (MonsterMainCoreManager.EventMode.EVENT_OPEN_MONSTER_BOOK.equals(mode)) {

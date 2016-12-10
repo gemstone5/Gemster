@@ -30,11 +30,13 @@ import ui.EffectManager;
  * Created by WONSEOK OH on 2016-12-04.
  */
 
-public class MonsterMainInterfaceManager implements EffectManager.EffectCompleteListener {
+public class MonsterMainInterfaceManager implements EffectManager.EffectCompleteListener, EditDNAUsePopupWindow.EventListener {
 
     private final Context mContext;
     private final Activity mActivity;
     private boolean mIsTouchable;
+
+    private EditDNAUsePopupWindow mEditDNAUsePopupWindow;
 
     private TextView mTextViewDebug;
     private LinearLayout mLinearLayoutDNACount;
@@ -92,6 +94,9 @@ public class MonsterMainInterfaceManager implements EffectManager.EffectComplete
 
         mEffectManager = new EffectManager(mContext);
         mEffectManager.setListener(this);
+
+        mEditDNAUsePopupWindow = new EditDNAUsePopupWindow(mActivity, mEffectManager);
+        mEditDNAUsePopupWindow.setEventListener(this);
     }
 
     public void init() {
@@ -142,9 +147,15 @@ public class MonsterMainInterfaceManager implements EffectManager.EffectComplete
             tryEvolution();
         } else if (view.equals(mImageButtonDnaUp) || view.equals(mImageButtonDnaDown)) {
             mListener.onMainInterfaceEvent(EventMode.EVENT_TOUCH_DNA_UP_OR_DOWN_STOP, null);
+        } else if (view.equals(mTextViewDNAUse)) {
+            editDNAUse();
         } else if (view.equals(mButtonResetForDebug)) {
             resetForDebug();
         }
+    }
+
+    private boolean isDnaUpDownView(View view) {
+        return view.equals(mImageButtonDnaUp) || view.equals(mImageButtonDnaDown);
     }
 
     private void initOnTouchListener() {
@@ -172,12 +183,14 @@ public class MonsterMainInterfaceManager implements EffectManager.EffectComplete
                         mEffectManager.disableBreathAnimation();
                     }
                     endClickScaleAnimation(view);
-                    if (view.equals(mImageButtonDnaUp) || view.equals(mImageButtonDnaDown)) {
+                    if (isDnaUpDownView(view)) {
                         mListener.onMainInterfaceEvent(EventMode.EVENT_TOUCH_DNA_UP_OR_DOWN_STOP, null);
                     }
                     this.setIgnore(true);
                 }
-                return false;
+
+                if (isDnaUpDownView(view)) return false;
+                return true;
             }
         };
     }
@@ -194,6 +207,10 @@ public class MonsterMainInterfaceManager implements EffectManager.EffectComplete
     private void tryEvolution() {
         setUtilButtonsEnabled(false);
         mListener.onMainInterfaceEvent(EventMode.EVENT_TRY_EVOLUTION, null);
+    }
+
+    private void editDNAUse() {
+        mEditDNAUsePopupWindow.show(mActivity.findViewById(android.R.id.content));
     }
 
     private void initViews() {
@@ -282,7 +299,7 @@ public class MonsterMainInterfaceManager implements EffectManager.EffectComplete
 
         if (prob > 1.0F) prob = 1.0F;
 
-        DecimalFormat df = new DecimalFormat("#.##");
+        DecimalFormat df = new DecimalFormat("#.##########");
         df.setRoundingMode(RoundingMode.HALF_UP);
 
         String text = df.format(prob * 100) + "%";
@@ -361,12 +378,19 @@ public class MonsterMainInterfaceManager implements EffectManager.EffectComplete
         mImageButtonMonster.setOnTouchListener(mOnTouchListener);
         mImageButtonDNA.setOnTouchListener(mOnTouchListener);
         mImageButtonEvolution.setOnTouchListener(mOnTouchListener);
+        mTextViewDNAUse.setOnTouchListener(mOnTouchListener);
         mButtonResetForDebug.setOnTouchListener(mOnTouchListener);
 
         mImageButtonDnaUp.setOnLongClickListener(mOnLongClickListener);
         mImageButtonDnaUp.setOnTouchListener(mOnTouchListener);
         mImageButtonDnaDown.setOnLongClickListener(mOnLongClickListener);
         mImageButtonDnaDown.setOnTouchListener(mOnTouchListener);
+    }
+
+    public void dismissPopupWindow() {
+        if (mEditDNAUsePopupWindow.isShowing()) {
+            mEditDNAUsePopupWindow.dismiss();
+        }
     }
 
     public void call(CallMode mode) {
@@ -428,6 +452,12 @@ public class MonsterMainInterfaceManager implements EffectManager.EffectComplete
         } else if (EffectManager.CompleteEventMode.BREATH_INTERCEPT.equals(mode)) {
             mEffectManager.enableBreathAnimation(mImageButtonMonster);
         }
+    }
+
+    @Override
+    public void onCompleteEditDNAUseEvent() {
+        setGameView();
+
     }
 
     public void showToast(String text) {

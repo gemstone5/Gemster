@@ -18,6 +18,12 @@ public class MainActivity extends Activity {
     }
 
     @Override
+    protected void onPause() {
+        mMainManager.pause();
+        super.onPause();
+    }
+
+    @Override
     public void onBackPressed() {
         if (mMainManager.backPressed()) {
             return;

@@ -295,6 +295,9 @@ public class MonsterMainCoreManager implements MonsterMainInterfaceManager.Event
         }
 
         mInterfaceManager.call(MonsterMainInterfaceManager.CallMode.DEBUG_INFO_SET, desc);
+    }
 
+    public void dismissPopupWindow() {
+        mInterfaceManager.dismissPopupWindow();
     }
 }

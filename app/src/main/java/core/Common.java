@@ -146,13 +146,13 @@ public class Common {
     }
 
     public static int getDNAQuantity(int tier) {
-        double base = 1.1f;
+        double base = 1.3f;
         double result = Math.pow(base, tier);
         return (int) result;
     }
 
     public static double getPerProb(int tier) {
-        double base = 0.7f;
+        double base = 0.6f;
         double result = Math.pow(base, tier + 1);
         return result;
     }

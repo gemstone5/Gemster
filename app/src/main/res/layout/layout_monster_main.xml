@@ -193,6 +193,8 @@
                 android:id="@+id/textView_DNA_use"
                 android:layout_width="85dp"
                 android:layout_height="20dp"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp"
                 android:background="@drawable/bg_dna_use"
                 android:gravity="center"
                 android:shadowColor="@color/color_black_60"

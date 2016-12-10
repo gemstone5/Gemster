@@ -216,4 +216,9 @@ public class EffectManager implements CustomAnimationDrawable.IAnimationFinishLi
         });
         animator.start();
     }
+
+    public void startVibrateAnimation(View view) {
+        Animation anim = AnimationUtils.loadAnimation(mContext, R.anim.anim_vibrate_horizontal);
+        view.startAnimation(anim);
+    }
 }

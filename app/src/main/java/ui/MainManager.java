@@ -77,6 +77,14 @@ public class MainManager implements MonsterMainFragment.EventListener {
         mMonsterMainFragment.setTouchable(true);
     }
 
+    public void dismissPopupWindow() {
+        mMonsterMainFragment.dismissPopupWindow();
+    }
+
+    public void pause() {
+        dismissPopupWindow();
+    }
+
     public boolean backPressed() {
         if (mMonsterBookFragment != null && mMonsterBookFragment.isVisible()) {
             removeMonsterBookFragment();
