@@ -165,6 +165,9 @@ public class MonsterMainInterfaceManager implements EffectManager.EffectComplete
                         mEffectManager.disableBreathAnimation();
                     }
                     endClickScaleAnimation(view);
+                    if (view.equals(mImageButtonDnaUp) || view.equals(mImageButtonDnaDown)) {
+                        mListener.onMainInterfaceEvent(EventMode.EVENT_TOUCH_DNA_UP_OR_DOWN_STOP, null);
+                    }
                     this.setIgnore(true);
                 }
                 return false;
