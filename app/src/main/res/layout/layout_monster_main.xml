@@ -13,13 +13,13 @@
 
         <ImageView
             android:id="@+id/imageView_DNA"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
             android:scaleType="fitCenter"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@drawable/ic_dna" />
 
         <TextView
             android:id="@+id/textView_DNA_count"
@@ -41,7 +41,7 @@
             android:background="@android:color/transparent"
             android:padding="2dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/setting_icon" />
+            android:src="@drawable/ic_setting" />
 
         <ImageButton
             android:id="@+id/imageButton_monster_book"
@@ -52,7 +52,7 @@
             android:background="@android:color/transparent"
             android:padding="2dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/monster_book_icon" />
+            android:src="@drawable/ic_monster_book" />
 
     </RelativeLayout>
 
@@ -61,7 +61,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_below="@id/layout_status"
-        android:background="@drawable/border_line" />
+        android:background="@drawable/monster_frame_background" />
 
     <ImageButton
         android:id="@+id/imageButton_monster"
@@ -121,29 +121,34 @@
 
         <ImageButton
             android:id="@+id/imageButton_DNA"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="85dp"
+            android:layout_height="85dp"
             android:layout_below="@+id/imageView_main_monster"
-            android:src="@mipmap/ic_launcher" />
+            android:background="@android:color/transparent"
+            android:padding="2dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_btn_get_dna" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
             android:orientation="vertical">
 
             <ImageButton
                 android:id="@+id/imageButton_evolution"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:layout_width="85dp"
+                android:layout_height="85dp"
                 android:layout_below="@+id/imageView_main_monster"
-                android:src="@android:drawable/btn_star_big_on" />
+                android:background="@android:color/transparent"
+                android:padding="2dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_btn_try_evol" />
 
             <TextView
                 android:id="@+id/textView_DNA_use"
-                android:layout_width="80dp"
+                android:layout_width="85dp"
                 android:layout_height="20dp"
-                android:background="@color/color_959595"
+                android:background="@drawable/bg_dna_use"
                 android:gravity="center" />
 
         </LinearLayout>
@@ -157,13 +162,17 @@
                 android:id="@+id/imageButton_DNA_up"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:src="@android:drawable/ic_input_add" />
+                android:background="@android:color/transparent"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_btn_dna_up" />
 
             <ImageButton
                 android:id="@+id/imageButton_DNA_down"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:src="@android:drawable/ic_delete" />
+                android:background="@android:color/transparent"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_btn_dna_down" />
 
         </LinearLayout>
 

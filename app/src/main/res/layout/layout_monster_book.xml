@@ -21,9 +21,8 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="5dp"
             android:background="@android:color/transparent"
-            android:padding="2dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/back_icon" />
+            android:src="@drawable/ic_back" />
 
     </RelativeLayout>
 

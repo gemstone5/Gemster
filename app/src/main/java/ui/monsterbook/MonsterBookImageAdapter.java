@@ -55,7 +55,7 @@ public class MonsterBookImageAdapter extends BaseAdapter {
 
         MonsterBookCustomImageView imageViewThumbnail = (MonsterBookCustomImageView) view.findViewById(R.id.MBI_imageView_thumbnail);
         if (!Common.isCollected(mContext, item.mMonsterKey)) {
-            imageViewThumbnail.setImageResource(R.drawable.question_icon);
+            imageViewThumbnail.setImageResource(R.drawable.ic_mbi_question_mark);
         } else {
             imageViewThumbnail.setImageResource(mMonsterBookItemList.get(position % 8).mResourceId);
         }
