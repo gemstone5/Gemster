@@ -11,25 +11,37 @@
         android:layout_alignParentTop="true"
         android:layout_marginBottom="10dp">
 
-        <ImageView
-            android:id="@+id/imageView_DNA"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
+        <LinearLayout
+            android:id="@+id/linearLayout_DNA_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_dna" />
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/textView_DNA_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@id/imageView_DNA"
-            android:text="0개"
-            android:textSize="20dp" />
+            <ImageView
+                android:id="@+id/imageView_DNA_count"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_dna" />
+
+            <TextView
+                android:id="@+id/textView_DNA_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
+                android:shadowColor="@color/color_black_60"
+                android:shadowDx="0"
+                android:shadowDy="0"
+                android:shadowRadius="12"
+                android:textSize="30dp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
 
         <ImageButton
             android:id="@+id/imageButton_setting"
@@ -95,16 +107,49 @@
             android:id="@+id/textView_monster_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:shadowColor="@color/color_black_30"
+            android:shadowDx="0"
+            android:shadowDy="0"
+            android:shadowRadius="10"
             android:text="Monster Name"
-            android:textSize="25dp" />
+            android:textColor="@color/color_black_60"
+            android:textSize="25dp"
+            android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/textView_monster_prob"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:text="(Prob: 100%)"
-            android:textSize="20dp" />
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textView_monster_prob_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:shadowColor="@color/color_black_30"
+                android:shadowDx="0"
+                android:shadowDy="0"
+                android:shadowRadius="10"
+                android:text="다음 진화 확률 :"
+                android:textColor="@color/color_black_60"
+                android:textSize="16dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textView_monster_prob_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:shadowColor="@color/color_000000"
+                android:shadowDx="0"
+                android:shadowDy="0"
+                android:shadowRadius="20"
+                android:textSize="25dp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
@@ -149,7 +194,12 @@
                 android:layout_width="85dp"
                 android:layout_height="20dp"
                 android:background="@drawable/bg_dna_use"
-                android:gravity="center" />
+                android:gravity="center"
+                android:shadowColor="@color/color_black_60"
+                android:shadowDx="0"
+                android:shadowDy="0"
+                android:shadowRadius="5"
+                android:textStyle="bold" />
 
         </LinearLayout>
 

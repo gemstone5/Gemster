@@ -98,13 +98,16 @@ public class MonsterMainCoreManager implements MonsterMainInterfaceManager.Event
 
     private void completeGettingDNA() {
         int feed = (int) Common.getPrefData(mContext, Common.MAIN_DNA);
-        Common.setPrefData(mContext, Common.MAIN_DNA, String.valueOf(feed + 1));
+        int tier = (int) Common.getPrefData(mContext, Common.MAIN_TIER);
+        final int quantity = Common.getDNAQuantity(tier);
+        Common.setPrefData(mContext, Common.MAIN_DNA, String.valueOf(feed + quantity));
 
         mHandler.post(new Runnable() {
             @Override
             public void run() {
                 mInterfaceManager.call(MonsterMainInterfaceManager.CallMode.UTIL_BUTTONS_ENABLE);
                 mInterfaceManager.call(MonsterMainInterfaceManager.CallMode.DNA_COUNT_SET);
+                mInterfaceManager.call(MonsterMainInterfaceManager.CallMode.STATUS_EFFECT_DNA_GET_START, quantity);
                 setDebugDescription(Common.DEBUG_DEFAULT);
             }
         });
@@ -146,9 +149,7 @@ public class MonsterMainCoreManager implements MonsterMainInterfaceManager.Event
         final int tier = (int) Common.getPrefData(mContext, Common.MAIN_TIER);
         final int useDNA = (int) Common.getPrefData(mContext, Common.MAIN_DNA_USE);
 
-//        TypedArray arrPerProb = mContext.getResources().obtainTypedArray(R.array.array_evol_prob);
-//        double perProb = (double) arrPerProb.getFloat(tier, 0F);
-        double perProb = 0.5f;
+        double perProb = Common.getPerProb(tier);
         double prob = perProb * useDNA;
         double rand = Math.random();
         final boolean result = (rand <= prob);

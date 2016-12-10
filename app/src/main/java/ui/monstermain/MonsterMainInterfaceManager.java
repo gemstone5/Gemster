@@ -2,6 +2,10 @@ package ui.monstermain;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.LinearGradient;
+import android.graphics.Shader;
+import android.support.v4.content.ContextCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -9,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,6 +37,8 @@ public class MonsterMainInterfaceManager implements EffectManager.EffectComplete
     private boolean mIsTouchable;
 
     private TextView mTextViewDebug;
+    private LinearLayout mLinearLayoutDNACount;
+    private ImageView mImageViewDNACount;
     private TextView mTextViewDNACount;
     private ImageButton mImageButtonSetting;
     private ImageButton mImageButtonMonsterBook;
@@ -39,7 +46,8 @@ public class MonsterMainInterfaceManager implements EffectManager.EffectComplete
     private ImageButton mImageButtonMonster;
     private ImageView mImageViewMonsterEffect;
     private TextView mTextViewMonsterName;
-    private TextView mTextViewMonsterProb;
+    private TextView mTextViewMonsterProbDesc;
+    private TextView mTextViewMonsterProbValue;
     private ImageButton mImageButtonDNA;
     private ImageButton mImageButtonEvolution;
     private TextView mTextViewDNAUse;
@@ -73,7 +81,7 @@ public class MonsterMainInterfaceManager implements EffectManager.EffectComplete
     public enum CallMode {
         UTIL_BUTTONS_ENABLE, UTIL_BUTTONS_DISABLE, DNA_USE_SET,
         DNA_COUNT_SET, MONSTER_IMAGE_SET, MONSTER_NAME_SET, MONSTER_PROB_SET,
-        MONSTER_EFFECT_EVOLUTION_SUCCESS_START, MONSTER_EFFECT_EVOLUTION_FAILED_START,
+        MONSTER_EFFECT_EVOLUTION_SUCCESS_START, MONSTER_EFFECT_EVOLUTION_FAILED_START, STATUS_EFFECT_DNA_GET_START,
         GAME_VIEW_SET, DEBUG_INFO_SET
     }
 
@@ -190,6 +198,8 @@ public class MonsterMainInterfaceManager implements EffectManager.EffectComplete
 
     private void initViews() {
         mTextViewDebug = (TextView) mActivity.findViewById(R.id.textView_debug);
+        mLinearLayoutDNACount = (LinearLayout) mActivity.findViewById(R.id.linearLayout_DNA_count);
+        mImageViewDNACount = (ImageView) mActivity.findViewById(R.id.imageView_DNA_count);
         mTextViewDNACount = (TextView) mActivity.findViewById(R.id.textView_DNA_count);
         mImageButtonSetting = (ImageButton) mActivity.findViewById(R.id.imageButton_setting);
         mImageButtonMonsterBook = (ImageButton) mActivity.findViewById(R.id.imageButton_monster_book);
@@ -197,7 +207,8 @@ public class MonsterMainInterfaceManager implements EffectManager.EffectComplete
         mImageButtonMonster = (ImageButton) mActivity.findViewById(R.id.imageButton_monster);
         mImageViewMonsterEffect = (ImageView) mActivity.findViewById(R.id.imageView_monster_effect);
         mTextViewMonsterName = (TextView) mActivity.findViewById(R.id.textView_monster_name);
-        mTextViewMonsterProb = (TextView) mActivity.findViewById(R.id.textView_monster_prob);
+        mTextViewMonsterProbDesc = (TextView) mActivity.findViewById(R.id.textView_monster_prob_desc);
+        mTextViewMonsterProbValue = (TextView) mActivity.findViewById(R.id.textView_monster_prob_value);
         mImageButtonDNA = (ImageButton) mActivity.findViewById(R.id.imageButton_DNA);
         mImageButtonEvolution = (ImageButton) mActivity.findViewById(R.id.imageButton_evolution);
         mTextViewDNAUse = (TextView) mActivity.findViewById(R.id.textView_DNA_use);
@@ -266,9 +277,7 @@ public class MonsterMainInterfaceManager implements EffectManager.EffectComplete
     private void setTextViewMonsterProb() {
         int tier = (int) Common.getPrefData(mContext, Common.MAIN_TIER);
         int useDNA = (int) Common.getPrefData(mContext, Common.MAIN_DNA_USE);
-//        TypedArray arrPerProb = mContext.getResources().obtainTypedArray(R.array.array_evol_prob);
-//        float perProb = arrPerProb.getFloat(tier, 0F);
-        double perProb = 0.5f;
+        double perProb = Common.getPerProb(tier);
         double prob = perProb * useDNA;
 
         if (prob > 1.0F) prob = 1.0F;
@@ -276,8 +285,25 @@ public class MonsterMainInterfaceManager implements EffectManager.EffectComplete
         DecimalFormat df = new DecimalFormat("#.##");
         df.setRoundingMode(RoundingMode.HALF_UP);
 
-        String text = "(다음 진화확률: " + df.format(prob * 100) + "%)";
-        mTextViewMonsterProb.setText(text);
+        String text = df.format(prob * 100) + "%";
+        mTextViewMonsterProbValue.setText(text);
+
+        int topColor, bottomColor;
+        if (prob <= 0.3) {
+            topColor = ContextCompat.getColor(mContext, R.color.color_red_60);
+            bottomColor = ContextCompat.getColor(mContext, R.color.color_red);
+        } else if (prob <= 0.6) {
+            topColor = ContextCompat.getColor(mContext, R.color.color_orange_60);
+            bottomColor = ContextCompat.getColor(mContext, R.color.color_orange);
+        } else if (prob <= 0.95) {
+            topColor = ContextCompat.getColor(mContext, R.color.color_dkgreen_60);
+            bottomColor = ContextCompat.getColor(mContext, R.color.color_dkgreen);
+        } else {
+            topColor = ContextCompat.getColor(mContext, R.color.color_blue_60);
+            bottomColor = ContextCompat.getColor(mContext, R.color.color_blue);
+        }
+        setTextVerticalShader(mTextViewMonsterProbValue, topColor, bottomColor);
+        mEffectManager.startGetEffect(mTextViewMonsterProbValue);
     }
 
     private void startEvolutionSuccessEffect() {
@@ -286,6 +312,14 @@ public class MonsterMainInterfaceManager implements EffectManager.EffectComplete
 
     private void startEvolutionFailedEffect() {
         mEffectManager.startFailedEffect(mImageViewMonsterEffect);
+    }
+
+    private void startGetDNAEffect(int quantity) {
+        int toValue = (int) Common.getPrefData(mContext, Common.MAIN_DNA);
+        int fromValue = toValue - quantity;
+        fromValue = fromValue < 0 ? 0 : fromValue;
+        mEffectManager.startCountAnimation(mTextViewDNACount, fromValue, toValue);
+        mEffectManager.startGetEffect(mLinearLayoutDNACount);
     }
 
     private void startClickScaleAnimation(View view) {
@@ -298,12 +332,20 @@ public class MonsterMainInterfaceManager implements EffectManager.EffectComplete
 
     private void setTextViewDNACount() {
         int count = (int) Common.getPrefData(mContext, Common.MAIN_DNA);
-        mTextViewDNACount.setText(count + "개");
+        mTextViewDNACount.setText(String.valueOf(count));
+        setTextVerticalShader(mTextViewDNACount, Color.GRAY, Color.DKGRAY);
     }
 
     private void setTextViewDNAUse() {
         int count = (int) Common.getPrefData(mContext, Common.MAIN_DNA_USE);
         mTextViewDNAUse.setText(String.valueOf(count));
+        setTextVerticalShader(mTextViewDNAUse, Color.GRAY, Color.DKGRAY);
+    }
+
+    private void setTextVerticalShader(TextView textView, int topColor, int bottomColor) {
+        Shader shader = new LinearGradient(
+                0, 0, 0, textView.getTextSize(), topColor, bottomColor, Shader.TileMode.CLAMP);
+        textView.getPaint().setShader(shader);
     }
 
     private void setUtilButtonsEnabled(boolean enable) {
@@ -363,6 +405,10 @@ public class MonsterMainInterfaceManager implements EffectManager.EffectComplete
                 break;
             case MONSTER_EFFECT_EVOLUTION_FAILED_START:
                 startEvolutionFailedEffect();
+                break;
+
+            case STATUS_EFFECT_DNA_GET_START:
+                startGetDNAEffect((int) param);
                 break;
 
             case GAME_VIEW_SET:

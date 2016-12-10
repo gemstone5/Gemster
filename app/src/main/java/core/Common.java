@@ -145,6 +145,18 @@ public class Common {
         return id;
     }
 
+    public static int getDNAQuantity(int tier) {
+        double base = 1.1f;
+        double result = Math.pow(base, tier);
+        return (int) result;
+    }
+
+    public static double getPerProb(int tier) {
+        double base = 0.7f;
+        double result = Math.pow(base, tier + 1);
+        return result;
+    }
+
     public static ArrayList<MonsterBookItem> getMonsterBookItemList(Context context) {
         ArrayList<MonsterBookItem> mListItem = new ArrayList<>();
         int[] arrMaxTier = context.getResources().getIntArray(R.array.array_max_tier_of_spec);

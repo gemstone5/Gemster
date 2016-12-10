@@ -1,5 +1,6 @@
 package ui;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
@@ -7,9 +8,11 @@ import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -192,5 +195,25 @@ public class EffectManager implements CustomAnimationDrawable.IAnimationFinishLi
         Animation anim = AnimationUtils.loadAnimation(mContext, R.anim.anim_scale_breath);
         view.startAnimation(anim);
         mIsBreathAnimationEnabled = true;
+    }
+
+    public void startGetEffect(View view) {
+        Animation anim = AnimationUtils.loadAnimation(mContext, R.anim.anim_scale_get);
+        view.startAnimation(anim);
+    }
+
+    public void startCountAnimation(final TextView textView, int fromValue, int toValue) {
+        int dif = toValue - fromValue;
+        int duration = dif < 100 ? dif * 10 : 1000;
+        ValueAnimator animator = new ValueAnimator();
+        animator.setObjectValues(fromValue, toValue);
+        animator.setDuration(duration);
+        animator.setInterpolator(new DecelerateInterpolator());
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            public void onAnimationUpdate(ValueAnimator animation) {
+                textView.setText("" + (int) animation.getAnimatedValue());
+            }
+        });
+        animator.start();
     }
 }
