@@ -157,6 +157,21 @@ public class Common {
         return result;
     }
 
+    public static int processCompleteDNAUseCount(int tier) {
+        double perProb = getPerProb(tier);
+        double completeCnt = Math.ceil(1.0f / perProb);
+        return (int) completeCnt;
+    }
+
+    public static int getCompleteDNAUseCount(int tier) {
+        return processCompleteDNAUseCount(tier);
+    }
+
+    public static int getCurrentCompleteDNAUseCount(Context context) {
+        int tier = (int) getPrefData(context, MAIN_TIER);
+        return processCompleteDNAUseCount(tier);
+    }
+
     public static ArrayList<MonsterBookItem> getMonsterBookItemList(Context context) {
         ArrayList<MonsterBookItem> mListItem = new ArrayList<>();
         int[] arrMaxTier = context.getResources().getIntArray(R.array.array_max_tier_of_spec);

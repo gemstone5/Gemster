@@ -135,13 +135,18 @@ public class MonsterMainCoreManager implements MonsterMainInterfaceManager.Event
         processRepeatTimer(RepeatTimerTask.TYPE_TRY_EVOLUTION);
     }
 
-    private void setUseDNA() {
+    private void setUseDNA(boolean isEvolSuccess) {
         int DNA = (int) Common.getPrefData(mContext, Common.MAIN_DNA);
         int useDNA = (int) Common.getPrefData(mContext, Common.MAIN_DNA_USE);
 
         if (DNA == 0 || useDNA > DNA) {
             useDNA = ((DNA == 0) ? 1 : DNA);
             Common.setPrefData(mContext, Common.MAIN_DNA_USE, String.valueOf(useDNA));
+        } else if (!isEvolSuccess) {
+            int count = Common.getCompleteDNAUseCount(0);
+            if (count < useDNA) {
+                Common.setPrefData(mContext, Common.MAIN_DNA_USE, String.valueOf(count));
+            }
         }
     }
 
@@ -154,7 +159,7 @@ public class MonsterMainCoreManager implements MonsterMainInterfaceManager.Event
         double rand = Math.random();
         final boolean result = (rand <= prob);
 
-        setUseDNA();
+        setUseDNA(result);
 
         if (result) {
             Common.setPrefData(mContext, Common.MAIN_TIER, String.valueOf(tier + 1));
@@ -198,7 +203,11 @@ public class MonsterMainCoreManager implements MonsterMainInterfaceManager.Event
     private void incrementDNAUse() {
         int useDNA = (int) Common.getPrefData(mContext, Common.MAIN_DNA_USE);
         int DNA = (int) Common.getPrefData(mContext, Common.MAIN_DNA);
-        if (useDNA < DNA) {
+
+        int count = Common.getCurrentCompleteDNAUseCount(mContext);
+        boolean isNeedIncrement = useDNA < count;
+
+        if (isNeedIncrement && useDNA < DNA) {
             useDNA += 1;
             if (useDNA > DNA) {
                 useDNA = DNA;
