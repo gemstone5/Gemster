@@ -279,9 +279,7 @@ public class MonsterMainInterfaceManager implements EffectManager.EffectComplete
         int spec = (int) Common.getPrefData(mContext, Common.MAIN_SPEC);
         int tier = (int) Common.getPrefData(mContext, Common.MAIN_TIER);
         int id = Common.getGemDrawableId(mContext, spec, tier);
-        mImageButtonMonster.setImageResource(id);
-
-        mEffectManager.enableBreathAnimation(mImageButtonMonster);
+        mEffectManager.changeMonsterImageViewWithAnimation(mContext, mImageButtonMonster, id);
     }
 
     private void setTextViewMonsterName() {
@@ -449,6 +447,7 @@ public class MonsterMainInterfaceManager implements EffectManager.EffectComplete
     public void complete(EffectManager.CompleteEventMode mode) {
         if (EffectManager.CompleteEventMode.EVOLUTION.equals(mode)) {
             setUtilButtonsEnabled(true);
+            setGameView();
         } else if (EffectManager.CompleteEventMode.BREATH_INTERCEPT.equals(mode)) {
             mEffectManager.enableBreathAnimation(mImageButtonMonster);
         }

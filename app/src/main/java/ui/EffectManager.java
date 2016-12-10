@@ -62,7 +62,7 @@ public class EffectManager implements CustomAnimationDrawable.IAnimationFinishLi
     private void initAniEvolutionSuccess() {
         mAniEvolutionSuccess = new CustomAnimationDrawable();
         mAniEvolutionSuccess.setOneShot(true);
-        for (int idx = 1; idx <= 35; idx++) {
+        for (int idx = 1; idx <= 30; idx++) {
             String name = "success_effect00";
             if (idx < 10) name += "0";
             name += idx;
@@ -218,5 +218,44 @@ public class EffectManager implements CustomAnimationDrawable.IAnimationFinishLi
     public void startVibrateAnimation(View view) {
         Animation anim = AnimationUtils.loadAnimation(mContext, R.anim.anim_vibrate_horizontal);
         view.startAnimation(anim);
+    }
+
+    public void changeMonsterImageViewWithAnimation(Context context, final ImageView view, final int id) {
+        if (view.getTag() != null && (int) view.getTag() == id) {
+            return;
+        }
+        view.setTag(id);
+        final Animation anim_out = AnimationUtils.loadAnimation(context, android.R.anim.fade_out);
+        final Animation anim_in = AnimationUtils.loadAnimation(context, android.R.anim.fade_in);
+        anim_out.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                view.setImageResource(id);
+                anim_in.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        enableBreathAnimation(view);
+                    }
+                });
+                view.startAnimation(anim_in);
+            }
+        });
+        view.startAnimation(anim_out);
     }
 }

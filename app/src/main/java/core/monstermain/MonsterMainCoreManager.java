@@ -172,7 +172,6 @@ public class MonsterMainCoreManager implements MonsterMainInterfaceManager.Event
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                mInterfaceManager.call(MonsterMainInterfaceManager.CallMode.GAME_VIEW_SET);
                 if (result) {
                     mInterfaceManager.call(MonsterMainInterfaceManager.CallMode.MONSTER_EFFECT_EVOLUTION_SUCCESS_START);
                 } else {
