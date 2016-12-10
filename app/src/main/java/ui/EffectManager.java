@@ -174,9 +174,7 @@ public class EffectManager implements CustomAnimationDrawable.IAnimationFinishLi
 
     @Override
     public void onAnimationFinished(AnimationDrawable animation, ImageView view) {
-        if (animation.isRunning()) {
-            animation.stop();
-        }
+        animation.stop();
         if (view != null) {
             view.setVisibility(View.GONE);
         }

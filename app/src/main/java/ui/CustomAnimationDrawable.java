@@ -1,6 +1,7 @@
 package ui;
 
 import android.graphics.drawable.AnimationDrawable;
+import android.os.Handler;
 import android.widget.ImageView;
 
 /**
@@ -10,41 +11,43 @@ import android.widget.ImageView;
 public class CustomAnimationDrawable extends AnimationDrawable {
 
     private ImageView mImageView;
+    private Handler mHandler;
 
     public interface IAnimationFinishListener {
         void onAnimationFinished(AnimationDrawable animation, ImageView view);
     }
 
-    private IAnimationFinishListener animationFinishListener;
-
-    public IAnimationFinishListener getAnimationFinishListener() {
-        return animationFinishListener;
-    }
+    private IAnimationFinishListener mAnimationFinishListener;
 
     public void setAnimationFinishListener(
             IAnimationFinishListener animationFinishListener, ImageView view) {
-        this.animationFinishListener = animationFinishListener;
+        this.mAnimationFinishListener = animationFinishListener;
         this.mImageView = view;
+    }
+
+    private AnimationDrawable getParent() {
+        return this;
     }
 
     @Override
     public void start() {
-        if (this.isRunning()) {
-            this.stop();
-        }
         super.start();
+        mHandler = new Handler();
+        checkIfAnimationDone();
     }
 
-    @Override
-    public boolean selectDrawable(int idx) {
-        boolean ret = super.selectDrawable(idx);
-
-        if ((idx != 0) && (idx == getNumberOfFrames() - 1)) {
-            if (animationFinishListener != null)
-                animationFinishListener.onAnimationFinished(this, mImageView);
-        }
-
-        return ret;
+    private void checkIfAnimationDone() {
+        final AnimationDrawable animation = getParent();
+        int timeBetweenChecks = 40;
+        mHandler.postDelayed(new Runnable() {
+            public void run() {
+                if (animation.getCurrent() != animation.getFrame(getParent().getNumberOfFrames() - 1)) {
+                    checkIfAnimationDone();
+                } else {
+                    mAnimationFinishListener.onAnimationFinished(animation, mImageView);
+                }
+            }
+        }, timeBetweenChecks);
     }
 
 }
