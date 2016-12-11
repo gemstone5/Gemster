@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -221,12 +222,13 @@ public class EffectManager implements CustomAnimationDrawable.IAnimationFinishLi
     }
 
     public void changeMonsterImageViewWithAnimation(Context context, final ImageView view, final int id) {
+        // Change monster image view with evolution effect
         if (view.getTag() != null && (int) view.getTag() == id) {
             return;
         }
         view.setTag(id);
-        final Animation anim_out = AnimationUtils.loadAnimation(context, android.R.anim.fade_out);
-        final Animation anim_in = AnimationUtils.loadAnimation(context, android.R.anim.fade_in);
+        final Animation anim_out = AnimationUtils.loadAnimation(context, R.anim.anim_scale_fade_out);
+        final Animation anim_in = AnimationUtils.loadAnimation(context, R.anim.anim_fade_in);
         anim_out.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
@@ -234,11 +236,12 @@ public class EffectManager implements CustomAnimationDrawable.IAnimationFinishLi
 
             @Override
             public void onAnimationRepeat(Animation animation) {
+                Log.d("gemtest", "repeat");
             }
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                view.setImageResource(id);
+                Log.d("gemtest", "end");
                 anim_in.setAnimationListener(new Animation.AnimationListener() {
                     @Override
                     public void onAnimationStart(Animation animation) {
@@ -254,6 +257,8 @@ public class EffectManager implements CustomAnimationDrawable.IAnimationFinishLi
                     }
                 });
                 view.startAnimation(anim_in);
+                view.setImageResource(id);
+                enableBreathAnimation(view);
             }
         });
         view.startAnimation(anim_out);

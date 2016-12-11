@@ -89,7 +89,6 @@
         android:layout_height="match_parent"
         android:layout_below="@id/layout_status"
         android:scaleType="fitCenter"
-        android:src="@drawable/border_line"
         android:visibility="gone" />
 
     <LinearLayout

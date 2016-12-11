@@ -177,6 +177,7 @@ public class MonsterMainCoreManager implements MonsterMainInterfaceManager.Event
                 } else {
                     mInterfaceManager.call(MonsterMainInterfaceManager.CallMode.MONSTER_EFFECT_EVOLUTION_FAILED_START);
                 }
+                mInterfaceManager.call(MonsterMainInterfaceManager.CallMode.GAME_VIEW_SET, true);
                 setDebugDescription(Common.DEBUG_DEFAULT);
                 if (result) {
                     mListener.onMainFragmentEvent(EventMode.EVENT_EVOLUTION_SUCCESS);

@@ -268,7 +268,11 @@ public class MonsterMainInterfaceManager implements EffectManager.EffectComplete
     }
 
     private void setGameView() {
-        setImageViewMonsterImage();
+        setGameView(false);
+    }
+
+    private void setGameView(boolean afterEvolution) {
+        setImageViewMonsterImage(afterEvolution);
         setTextViewMonsterName();
         setTextViewMonsterProb();
         setTextViewDNACount();
@@ -276,10 +280,19 @@ public class MonsterMainInterfaceManager implements EffectManager.EffectComplete
     }
 
     private void setImageViewMonsterImage() {
+        setImageViewMonsterImage(false);
+    }
+
+    private void setImageViewMonsterImage(boolean afterEvolution) {
         int spec = (int) Common.getPrefData(mContext, Common.MAIN_SPEC);
         int tier = (int) Common.getPrefData(mContext, Common.MAIN_TIER);
         int id = Common.getGemDrawableId(mContext, spec, tier);
-        mEffectManager.changeMonsterImageViewWithAnimation(mContext, mImageButtonMonster, id);
+        if (afterEvolution) {
+            mEffectManager.changeMonsterImageViewWithAnimation(mContext, mImageButtonMonster, id);
+        } else {
+            mEffectManager.enableBreathAnimation(mImageButtonMonster);
+            mImageButtonMonster.setImageResource(id);
+        }
     }
 
     private void setTextViewMonsterName() {
@@ -434,7 +447,11 @@ public class MonsterMainInterfaceManager implements EffectManager.EffectComplete
                 break;
 
             case GAME_VIEW_SET:
-                setGameView();
+                if (param != null && (boolean) param) {
+                    setGameView(true);
+                } else {
+                    setGameView();
+                }
                 break;
 
             case DEBUG_INFO_SET:
@@ -447,7 +464,6 @@ public class MonsterMainInterfaceManager implements EffectManager.EffectComplete
     public void complete(EffectManager.CompleteEventMode mode) {
         if (EffectManager.CompleteEventMode.EVOLUTION.equals(mode)) {
             setUtilButtonsEnabled(true);
-            setGameView();
         } else if (EffectManager.CompleteEventMode.BREATH_INTERCEPT.equals(mode)) {
             mEffectManager.enableBreathAnimation(mImageButtonMonster);
         }
