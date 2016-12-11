@@ -41,7 +41,6 @@ public class MonsterMainInterfaceManager implements EffectManager.EffectComplete
 
     private TextView mTextViewDebug;
     private LinearLayout mLinearLayoutDNACount;
-    private ImageView mImageViewDNACount;
     private TextView mTextViewDNACount;
     private ImageButton mImageButtonSetting;
     private ImageButton mImageButtonMonsterBook;
@@ -218,7 +217,6 @@ public class MonsterMainInterfaceManager implements EffectManager.EffectComplete
     private void initViews() {
         mTextViewDebug = (TextView) mActivity.findViewById(R.id.textView_debug);
         mLinearLayoutDNACount = (LinearLayout) mActivity.findViewById(R.id.linearLayout_DNA_count);
-        mImageViewDNACount = (ImageView) mActivity.findViewById(R.id.imageView_DNA_count);
         mTextViewDNACount = (TextView) mActivity.findViewById(R.id.textView_DNA_count);
         mImageButtonSetting = (ImageButton) mActivity.findViewById(R.id.imageButton_setting);
         mImageButtonMonsterBook = (ImageButton) mActivity.findViewById(R.id.imageButton_monster_book);
@@ -299,7 +297,7 @@ public class MonsterMainInterfaceManager implements EffectManager.EffectComplete
 
         if (prob > 1.0F) prob = 1.0F;
 
-        DecimalFormat df = new DecimalFormat("#.##########");
+        DecimalFormat df = new DecimalFormat("#.####");
         df.setRoundingMode(RoundingMode.HALF_UP);
 
         String text = df.format(prob * 100) + "%";

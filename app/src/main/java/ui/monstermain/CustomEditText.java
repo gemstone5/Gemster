@@ -38,6 +38,6 @@ public class CustomEditText extends EditText {
     }
 
     public interface OnBackPressListener {
-        public void onBackPress();
+        void onBackPress();
     }
 }

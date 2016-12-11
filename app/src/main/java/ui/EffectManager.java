@@ -30,7 +30,7 @@ public class EffectManager implements CustomAnimationDrawable.IAnimationFinishLi
     private CustomAnimationDrawable mAniEvolutionSuccess;
     private CustomAnimationDrawable mAniEvolutionFailed;
 
-    private final int ANI_DURATION = 40;
+    private final int ANI_DURATION = 30;
 
     private boolean mIsBreathAnimationEnabled = false;
 
