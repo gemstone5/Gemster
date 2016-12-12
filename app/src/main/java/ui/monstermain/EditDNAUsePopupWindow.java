@@ -15,10 +15,11 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.gemstone5.gemster.R;
+
 import core.Common;
 import core.CustomOnTouchListener;
 import core.SoundManager;
-import core.gemster.R;
 import ui.EffectManager;
 
 /**

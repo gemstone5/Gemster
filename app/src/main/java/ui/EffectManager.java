@@ -12,9 +12,9 @@ import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import com.gemstone5.gemster.R;
 
-import core.gemster.R;
+import java.util.ArrayList;
 
 /**
  * Created by WONSEOK OH on 2016-12-04.

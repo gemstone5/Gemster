@@ -3,6 +3,8 @@ package core;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.gemstone5.gemster.R;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -10,7 +12,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import core.gemster.R;
 import core.monsterbook.MonsterBookItem;
 
 /**

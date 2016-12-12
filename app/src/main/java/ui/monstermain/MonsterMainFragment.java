@@ -9,8 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.gemstone5.gemster.R;
+
 import core.Common;
-import core.gemster.R;
 import core.monstermain.MonsterMainCoreManager;
 
 /**

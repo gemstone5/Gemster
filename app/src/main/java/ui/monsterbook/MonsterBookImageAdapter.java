@@ -7,11 +7,11 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import com.bumptech.glide.Glide;
+import com.gemstone5.gemster.R;
 
 import java.util.ArrayList;
 
 import core.Common;
-import core.gemster.R;
 import core.monsterbook.MonsterBookItem;
 
 /**

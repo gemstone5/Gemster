@@ -3,7 +3,7 @@ package ui;
 import android.app.Activity;
 import android.os.Bundle;
 
-import core.gemster.R;
+import com.gemstone5.gemster.R;
 
 public class MainActivity extends Activity {
 

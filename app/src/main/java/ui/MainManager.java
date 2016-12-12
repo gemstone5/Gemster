@@ -4,8 +4,9 @@ import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 
+import com.gemstone5.gemster.R;
+
 import core.SoundManager;
-import core.gemster.R;
 import ui.monsterbook.MonsterBookFragment;
 import ui.monstermain.MonsterMainFragment;
 

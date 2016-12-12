@@ -11,9 +11,10 @@ import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.ImageButton;
 
+import com.gemstone5.gemster.R;
+
 import core.CustomOnTouchListener;
 import core.SoundManager;
-import core.gemster.R;
 import ui.EffectManager;
 
 /**

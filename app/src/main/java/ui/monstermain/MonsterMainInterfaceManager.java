@@ -18,13 +18,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.gemstone5.gemster.R;
+
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
 import core.Common;
 import core.CustomOnTouchListener;
 import core.SoundManager;
-import core.gemster.R;
 import ui.EffectManager;
 
 /**
