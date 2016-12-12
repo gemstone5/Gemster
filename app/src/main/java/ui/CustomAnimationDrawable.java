@@ -57,7 +57,7 @@ public class CustomAnimationDrawable extends AnimationDrawable {
 
     private void checkIfAnimationDone() {
         final AnimationDrawable animation = getParent();
-        int timeBetweenChecks = 30;
+        int timeBetweenChecks = 60;
         mHandler.postDelayed(new Runnable() {
             public void run() {
                 Drawable current = animation.getCurrent();
@@ -66,7 +66,6 @@ public class CustomAnimationDrawable extends AnimationDrawable {
                     mAnimationFinishListener.onAnimationFinished(animation, mImageView);
                     mIsFramed.clear();
                 } else {
-                    Log.d("gemtest", String.valueOf(mFrameList.indexOf(current)));
                     mIsFramed.put(mFrameList.indexOf(current), true);
                     checkIfAnimationDone();
                 }

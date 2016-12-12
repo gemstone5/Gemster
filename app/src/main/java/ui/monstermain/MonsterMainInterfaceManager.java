@@ -83,7 +83,8 @@ public class MonsterMainInterfaceManager implements EffectManager.EffectComplete
     public enum CallMode {
         UTIL_BUTTONS_ENABLE, UTIL_BUTTONS_DISABLE, DNA_USE_SET,
         DNA_COUNT_SET, MONSTER_IMAGE_SET, MONSTER_NAME_SET, MONSTER_PROB_SET,
-        MONSTER_EFFECT_EVOLUTION_SUCCESS_START, MONSTER_EFFECT_EVOLUTION_FAILED_START, STATUS_EFFECT_DNA_GET_START,
+        MONSTER_EFFECT_EVOLUTION_SUCCESS_START, MONSTER_EFFECT_EVOLUTION_FAILED_START,
+        STATUS_EFFECT_DNA_GET_START, MONSTER_EFFECT_EVOLUTION_WHILE_START,
         GAME_VIEW_SET, DEBUG_INFO_SET
     }
 
@@ -342,6 +343,10 @@ public class MonsterMainInterfaceManager implements EffectManager.EffectComplete
         mEffectManager.startFailedEffect(mImageViewMonsterEffect);
     }
 
+    private void startEvolutionWhileEffect() {
+        mEffectManager.startEvolutionWhileEffect(mImageViewMonsterEffect);
+    }
+
     private void startGetDNAEffect(int quantity) {
         int toValue = (int) Common.getPrefData(mContext, Common.MAIN_DNA);
         int fromValue = toValue - quantity;
@@ -440,6 +445,9 @@ public class MonsterMainInterfaceManager implements EffectManager.EffectComplete
                 break;
             case MONSTER_EFFECT_EVOLUTION_FAILED_START:
                 startEvolutionFailedEffect();
+                break;
+            case MONSTER_EFFECT_EVOLUTION_WHILE_START:
+                startEvolutionWhileEffect();
                 break;
 
             case STATUS_EFFECT_DNA_GET_START:

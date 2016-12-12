@@ -15,9 +15,6 @@ import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 import core.gemster.R;
 
 /**
@@ -30,8 +27,9 @@ public class EffectManager implements CustomAnimationDrawable.IAnimationFinishLi
 
     private CustomAnimationDrawable mAniEvolutionSuccess;
     private CustomAnimationDrawable mAniEvolutionFailed;
+    private AnimationDrawable mAniEvolutionWhile;
 
-    private final int ANI_DURATION = 30;
+    private final int ANI_DURATION = 15;
 
     private boolean mIsBreathAnimationEnabled = false;
 
@@ -56,6 +54,7 @@ public class EffectManager implements CustomAnimationDrawable.IAnimationFinishLi
 
         initAniEvolutionSuccess();
         initAniEvolutionFailed();
+        initAniEvolutionWhile();
 
         initAnimationListener();
     }
@@ -85,6 +84,20 @@ public class EffectManager implements CustomAnimationDrawable.IAnimationFinishLi
             Drawable drawable;
             drawable = ContextCompat.getDrawable(mContext, id);
             mAniEvolutionFailed.addFrame(drawable, ANI_DURATION);
+        }
+    }
+
+    private void initAniEvolutionWhile() {
+        mAniEvolutionWhile = new AnimationDrawable();
+        mAniEvolutionWhile.setOneShot(false);
+        for (int idx = 1; idx <= 35; idx++) {
+            String name = "evoluting00";
+            if (idx < 10) name += "0";
+            name += idx;
+            int id = mContext.getResources().getIdentifier(name, "drawable", mContext.getPackageName());
+            Drawable drawable;
+            drawable = ContextCompat.getDrawable(mContext, id);
+            mAniEvolutionWhile.addFrame(drawable, ANI_DURATION);
         }
     }
 
@@ -127,38 +140,31 @@ public class EffectManager implements CustomAnimationDrawable.IAnimationFinishLi
     }
 
     public void startSuccessEffect(ImageView view) {
+        stopEvolutionWhileEffect(view);
         mAniEvolutionSuccess.setAnimationFinishListener(this, view);
         view.setVisibility(View.VISIBLE);
         view.setBackground(mAniEvolutionSuccess);
-        startAnimationWithEndTimer(mAniEvolutionSuccess);
+        mAniEvolutionSuccess.start();
     }
 
     public void startFailedEffect(ImageView view) {
+        stopEvolutionWhileEffect(view);
         mAniEvolutionFailed.setAnimationFinishListener(this, view);
         view.setVisibility(View.VISIBLE);
         view.setBackground(mAniEvolutionFailed);
-        startAnimationWithEndTimer(mAniEvolutionFailed);
+        mAniEvolutionFailed.start();
     }
 
-    private void startAnimationWithEndTimer(final AnimationDrawable animation) {
-        animation.start();
-        setAnimationEndTimer(animation);
+    public void startEvolutionWhileEffect(ImageView view) {
+        view.clearAnimation();
+        view.setVisibility(View.VISIBLE);
+        view.setBackground(mAniEvolutionWhile);
+        mAniEvolutionWhile.start();
     }
 
-    private void setAnimationEndTimer(final AnimationDrawable animation) {
-        long totalDuration = 0;
-        for (int i = 0; i < animation.getNumberOfFrames(); i++) {
-            totalDuration += animation.getDuration(i);
-        }
-        Timer timer = new Timer();
-
-        TimerTask timerTask = new TimerTask() {
-            @Override
-            public void run() {
-                animation.stop();
-            }
-        };
-        timer.schedule(timerTask, totalDuration);
+    public void stopEvolutionWhileEffect(ImageView view) {
+        mAniEvolutionWhile.stop();
+        view.clearAnimation();
     }
 
     private void processClickScaleAnimation(View view, boolean isDown) {

@@ -130,6 +130,7 @@ public class MonsterMainCoreManager implements MonsterMainInterfaceManager.Event
         DNA -= useDNA;
         Common.setPrefData(mContext, Common.MAIN_DNA, String.valueOf(DNA));
         mInterfaceManager.call(MonsterMainInterfaceManager.CallMode.DNA_COUNT_SET);
+        mInterfaceManager.call(MonsterMainInterfaceManager.CallMode.MONSTER_EFFECT_EVOLUTION_WHILE_START);
 
         mTimeRemain = (int) (Common.EVOLUTION_TIME / Common.TIME_DELAY);
         processRepeatTimer(RepeatTimerTask.TYPE_TRY_EVOLUTION);

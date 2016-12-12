@@ -33,7 +33,7 @@ public class Common {
 
     public static final long TIME_DELAY = 10L;
     public static final long DNA_TIME = 0L;
-    public static final long EVOLUTION_TIME = 1000; // 2sec
+    public static final long EVOLUTION_TIME = 2000; // 2sec
 
     public static void setPrefData(Context context, String key, String value) {
         SharedPreferences prefs = context.getSharedPreferences(PREF_MAIN, Context.MODE_PRIVATE);
