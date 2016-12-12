@@ -60,9 +60,9 @@ public class EffectManager implements FramesSequenceAnimation.OnAnimationStopped
     }
 
     public void initEvolutionAnimations() {
-        mAniEvolutionSuccess = new FramesSequenceAnimation(TAG_ANIM_EVOLUTION_SUCCESS, getFrameList("success_effect", 30), 60, false);
-        mAniEvolutionFailed = new FramesSequenceAnimation(TAG_ANIM_EVOLUTION_FAILED, getFrameList("failed_effect", 30), 60, false);
-        mAniEvolutionWhile = new FramesSequenceAnimation(TAG_ANIM_EVOLUTION_WHILE, getFrameList("evoluting", 35), 60, true);
+        mAniEvolutionSuccess = new FramesSequenceAnimation(TAG_ANIM_EVOLUTION_SUCCESS, getFrameList("success_effect", 30), 120, false);
+        mAniEvolutionFailed = new FramesSequenceAnimation(TAG_ANIM_EVOLUTION_FAILED, getFrameList("failed_effect", 30), 120, false);
+        mAniEvolutionWhile = new FramesSequenceAnimation(TAG_ANIM_EVOLUTION_WHILE, getFrameList("evoluting", 35), 120, true);
 
         mAniEvolutionSuccess.setOnAnimationStoppedListener(this);
         mAniEvolutionFailed.setOnAnimationStoppedListener(this);
