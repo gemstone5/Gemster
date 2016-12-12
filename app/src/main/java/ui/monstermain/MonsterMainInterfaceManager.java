@@ -19,6 +19,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gemstone5.gemster.R;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -105,6 +107,8 @@ public class MonsterMainInterfaceManager implements EffectManager.EffectComplete
         initViewListener();
         initViews();
         setListener();
+
+        initAds();
     }
 
     private void initViewListener() {
@@ -402,6 +406,12 @@ public class MonsterMainInterfaceManager implements EffectManager.EffectComplete
         mImageButtonDnaUp.setOnTouchListener(mOnTouchListener);
         mImageButtonDnaDown.setOnLongClickListener(mOnLongClickListener);
         mImageButtonDnaDown.setOnTouchListener(mOnTouchListener);
+    }
+
+    private void initAds() {
+        AdView mAdView = (AdView) mActivity.findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
     }
 
     public void dismissPopupWindow() {

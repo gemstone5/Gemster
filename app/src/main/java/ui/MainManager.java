@@ -5,6 +5,8 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 
 import com.gemstone5.gemster.R;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 import core.SoundManager;
 import ui.monsterbook.MonsterBookFragment;
