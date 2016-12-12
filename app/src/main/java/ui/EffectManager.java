@@ -2,9 +2,6 @@ package ui;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.graphics.drawable.AnimationDrawable;
-import android.graphics.drawable.Drawable;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -15,23 +12,29 @@ import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 import core.gemster.R;
 
 /**
  * Created by WONSEOK OH on 2016-12-04.
  */
 
-public class EffectManager implements CustomAnimationDrawable.IAnimationFinishListener {
+public class EffectManager implements FramesSequenceAnimation.OnAnimationStoppedListener {
 
     private Context mContext;
 
-    private CustomAnimationDrawable mAniEvolutionSuccess;
-    private CustomAnimationDrawable mAniEvolutionFailed;
-    private AnimationDrawable mAniEvolutionWhile;
+    private FramesSequenceAnimation mAniEvolutionSuccess;
+    private FramesSequenceAnimation mAniEvolutionFailed;
+    private FramesSequenceAnimation mAniEvolutionWhile;
 
     private final int ANI_DURATION = 15;
 
     private boolean mIsBreathAnimationEnabled = false;
+
+    private final int TAG_ANIM_EVOLUTION_SUCCESS = 0;
+    private final int TAG_ANIM_EVOLUTION_FAILED = 1;
+    private final int TAG_ANIM_EVOLUTION_WHILE = 2;
 
     public enum CompleteEventMode {
         EVOLUTION, BREATH_INTERCEPT
@@ -52,53 +55,30 @@ public class EffectManager implements CustomAnimationDrawable.IAnimationFinishLi
 
         mContext = context;
 
-        initAniEvolutionSuccess();
-        initAniEvolutionFailed();
-        initAniEvolutionWhile();
-
+        initEvolutionAnimations();
         initAnimationListener();
     }
 
-    private void initAniEvolutionSuccess() {
-        mAniEvolutionSuccess = new CustomAnimationDrawable();
-        mAniEvolutionSuccess.setOneShot(true);
-        for (int idx = 1; idx <= 30; idx++) {
-            String name = "success_effect00";
-            if (idx < 10) name += "0";
-            name += idx;
-            int id = mContext.getResources().getIdentifier(name, "drawable", mContext.getPackageName());
-            Drawable drawable;
-            drawable = ContextCompat.getDrawable(mContext, id);
-            mAniEvolutionSuccess.addFrame(drawable, ANI_DURATION);
-        }
+    public void initEvolutionAnimations() {
+        mAniEvolutionSuccess = new FramesSequenceAnimation(TAG_ANIM_EVOLUTION_SUCCESS, getFrameList("success_effect", 30), 60, false);
+        mAniEvolutionFailed = new FramesSequenceAnimation(TAG_ANIM_EVOLUTION_FAILED, getFrameList("failed_effect", 30), 60, false);
+        mAniEvolutionWhile = new FramesSequenceAnimation(TAG_ANIM_EVOLUTION_WHILE, getFrameList("evoluting", 35), 60, true);
+
+        mAniEvolutionSuccess.setOnAnimationStoppedListener(this);
+        mAniEvolutionFailed.setOnAnimationStoppedListener(this);
+        mAniEvolutionWhile.setOnAnimationStoppedListener(this);
     }
 
-    private void initAniEvolutionFailed() {
-        mAniEvolutionFailed = new CustomAnimationDrawable();
-        mAniEvolutionFailed.setOneShot(true);
-        for (int idx = 1; idx <= 30; idx++) {
-            String name = "failed_effect00";
+    public ArrayList<Integer> getFrameList(String preName, int count) {
+        ArrayList<Integer> mList = new ArrayList<>();
+        for (int idx = 1; idx <= count; idx++) {
+            String name = preName + "00";
             if (idx < 10) name += "0";
             name += idx;
             int id = mContext.getResources().getIdentifier(name, "drawable", mContext.getPackageName());
-            Drawable drawable;
-            drawable = ContextCompat.getDrawable(mContext, id);
-            mAniEvolutionFailed.addFrame(drawable, ANI_DURATION);
+            mList.add(id);
         }
-    }
-
-    private void initAniEvolutionWhile() {
-        mAniEvolutionWhile = new AnimationDrawable();
-        mAniEvolutionWhile.setOneShot(false);
-        for (int idx = 1; idx <= 35; idx++) {
-            String name = "evoluting00";
-            if (idx < 10) name += "0";
-            name += idx;
-            int id = mContext.getResources().getIdentifier(name, "drawable", mContext.getPackageName());
-            Drawable drawable;
-            drawable = ContextCompat.getDrawable(mContext, id);
-            mAniEvolutionWhile.addFrame(drawable, ANI_DURATION);
-        }
+        return mList;
     }
 
     private Animation getAniActionUpDown(boolean isDown) {
@@ -141,25 +121,18 @@ public class EffectManager implements CustomAnimationDrawable.IAnimationFinishLi
 
     public void startSuccessEffect(ImageView view) {
         stopEvolutionWhileEffect(view);
-        mAniEvolutionSuccess.setAnimationFinishListener(this, view);
-        view.setVisibility(View.VISIBLE);
-        view.setBackground(mAniEvolutionSuccess);
-        mAniEvolutionSuccess.start();
+        mAniEvolutionSuccess.start(view);
     }
 
     public void startFailedEffect(ImageView view) {
         stopEvolutionWhileEffect(view);
-        mAniEvolutionFailed.setAnimationFinishListener(this, view);
-        view.setVisibility(View.VISIBLE);
-        view.setBackground(mAniEvolutionFailed);
-        mAniEvolutionFailed.start();
+        mAniEvolutionFailed.start(view);
     }
 
     public void startEvolutionWhileEffect(ImageView view) {
         view.clearAnimation();
         view.setVisibility(View.VISIBLE);
-        view.setBackground(mAniEvolutionWhile);
-        mAniEvolutionWhile.start();
+        mAniEvolutionWhile.start(view);
     }
 
     public void stopEvolutionWhileEffect(ImageView view) {
@@ -177,19 +150,6 @@ public class EffectManager implements CustomAnimationDrawable.IAnimationFinishLi
 
     public void endClickScaleAnimation(View view) {
         processClickScaleAnimation(view, false);
-    }
-
-    @Override
-    public void onAnimationFinished(AnimationDrawable animation, ImageView view) {
-        animation.stop();
-        if (view != null) {
-            view.setVisibility(View.GONE);
-        }
-        if (mListener != null) {
-            if (animation.equals(mAniEvolutionSuccess) || animation.equals(mAniEvolutionFailed)) {
-                mListener.complete(CompleteEventMode.EVOLUTION);
-            }
-        }
     }
 
     public void disableBreathAnimation() {
@@ -268,5 +228,14 @@ public class EffectManager implements CustomAnimationDrawable.IAnimationFinishLi
             }
         });
         view.startAnimation(anim_out);
+    }
+
+    @Override
+    public void AnimationStopped(int tag, ImageView view) {
+        if (mListener != null) {
+            if (tag == TAG_ANIM_EVOLUTION_SUCCESS || tag == TAG_ANIM_EVOLUTION_FAILED) {
+                mListener.complete(CompleteEventMode.EVOLUTION);
+            }
+        }
     }
 }
