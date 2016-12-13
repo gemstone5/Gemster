@@ -21,6 +21,8 @@ import android.widget.Toast;
 import com.gemstone5.gemster.R;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.unity3d.ads.UnityAds;
+import com.unity3d.ads.mediation.IUnityAdsExtendedListener;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -40,6 +42,8 @@ public class MonsterMainInterfaceManager implements EffectManager.EffectComplete
     private final Activity mActivity;
     private boolean mIsTouchable;
 
+    private final UnityAdsListener unityAdsListener = new UnityAdsListener();
+
     private EditDNAUsePopupWindow mEditDNAUsePopupWindow;
 
     private TextView mTextViewDebug;
@@ -47,6 +51,7 @@ public class MonsterMainInterfaceManager implements EffectManager.EffectComplete
     private TextView mTextViewDNACount;
     private ImageButton mImageButtonSetting;
     private ImageButton mImageButtonMonsterBook;
+    private ImageButton mImageButtonBoost;
     private ImageView mImageViewMonsterFrame;
     private ImageButton mImageButtonMonster;
     private ImageView mImageViewMonsterEffect;
@@ -147,6 +152,12 @@ public class MonsterMainInterfaceManager implements EffectManager.EffectComplete
         if (view.equals(mImageButtonSetting)) {
         } else if (view.equals(mImageButtonMonsterBook)) {
             openMonsterBook();
+        } else if (view.equals(mImageButtonBoost)) {
+            if (UnityAds.isReady()) {
+                UnityAds.show(mActivity);
+            } else {
+                initUnityAds();
+            }
         } else if (view.equals(mImageButtonDNA)) {
             getDNA();
         } else if (view.equals(mImageButtonEvolution)) {
@@ -226,6 +237,7 @@ public class MonsterMainInterfaceManager implements EffectManager.EffectComplete
         mTextViewDNACount = (TextView) mActivity.findViewById(R.id.textView_DNA_count);
         mImageButtonSetting = (ImageButton) mActivity.findViewById(R.id.imageButton_setting);
         mImageButtonMonsterBook = (ImageButton) mActivity.findViewById(R.id.imageButton_monster_book);
+        mImageButtonBoost = (ImageButton) mActivity.findViewById(R.id.imageButton_boost);
         mImageViewMonsterFrame = (ImageView) mActivity.findViewById(R.id.imageView_monster_frame);
         mImageButtonMonster = (ImageButton) mActivity.findViewById(R.id.imageButton_monster);
         mImageViewMonsterEffect = (ImageView) mActivity.findViewById(R.id.imageView_monster_effect);
@@ -396,6 +408,7 @@ public class MonsterMainInterfaceManager implements EffectManager.EffectComplete
     private void setListener() {
         mImageButtonSetting.setOnTouchListener(mOnTouchListener);
         mImageButtonMonsterBook.setOnTouchListener(mOnTouchListener);
+        mImageButtonBoost.setOnTouchListener(mOnTouchListener);
         mImageButtonMonster.setOnTouchListener(mOnTouchListener);
         mImageButtonDNA.setOnTouchListener(mOnTouchListener);
         mImageButtonEvolution.setOnTouchListener(mOnTouchListener);
@@ -412,6 +425,11 @@ public class MonsterMainInterfaceManager implements EffectManager.EffectComplete
         AdView mAdView = (AdView) mActivity.findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
+        initUnityAds();
+    }
+
+    private void initUnityAds() {
+        UnityAds.initialize(mActivity, mActivity.getResources().getString(R.string.unity_ads_game_id), unityAdsListener, true);
     }
 
     public void dismissPopupWindow() {
@@ -491,6 +509,37 @@ public class MonsterMainInterfaceManager implements EffectManager.EffectComplete
     @Override
     public void onCompleteEditDNAUseEvent() {
         setGameView();
+
+    }
+
+    private class UnityAdsListener implements IUnityAdsExtendedListener {
+
+        @Override
+        public void onUnityAdsClick(String s) {
+
+        }
+
+        @Override
+        public void onUnityAdsReady(String s) {
+
+        }
+
+        @Override
+        public void onUnityAdsStart(String s) {
+
+        }
+
+        @Override
+        public void onUnityAdsFinish(String s, UnityAds.FinishState finishState) {
+            if (finishState != UnityAds.FinishState.SKIPPED) {
+
+            }
+        }
+
+        @Override
+        public void onUnityAdsError(UnityAds.UnityAdsError unityAdsError, String s) {
+
+        }
 
     }
 

@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Gemster</string>
     <string name="banner_ad_unit_id">ca-app-pub-6742502407672292/2415877961</string>
+    <string name="unity_ads_game_id">1230727</string>
 </resources>

@@ -91,7 +91,7 @@ public class Common {
     public static boolean isExceptionalTier(Context context) {
         int maxTier = getMaxTier(context);
         int tier = (int) Common.getPrefData(context, Common.MAIN_TIER);
-        if (tier + 1 >= maxTier) {
+        if (tier >= maxTier) {
             return true;
         }
         return false;

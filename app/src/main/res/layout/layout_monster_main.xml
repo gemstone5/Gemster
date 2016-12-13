@@ -67,6 +67,17 @@
             android:scaleType="fitCenter"
             android:src="@drawable/ic_monster_book" />
 
+        <ImageButton
+            android:id="@+id/imageButton_boost"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/imageButton_monster_book"
+            android:background="@android:color/transparent"
+            android:padding="2dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_setting" />
+
     </RelativeLayout>
 
     <ImageView
